@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/drawable/btn_rounded.xml" value="0.2105" />
+        <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/drawable/ic_email.xml" value="0.2105" />
+        <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/drawable/ic_lock.xml" value="0.2105" />
+        <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/drawable/ic_name.xml" value="0.2105" />
+        <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/drawable/ic_person.xml" value="0.2105" />
+        <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/drawable/ic_phone.xml" value="0.2105" />
+        <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/layout/activity_forgot_password.xml" value="0.2604166666666667" />
+        <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/layout/activity_fpwotp.xml" value="0.2604166666666667" />
+        <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/layout/activity_get_phone_number.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/layout/activity_main.xml" value="0.2604166666666667" />
+        <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/layout/activity_otpverification.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/layout/activity_reset_pw.xml" value="0.2604166666666667" />
+        <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/layout/activity_reset_success.xml" value="0.2604166666666667" />
+        <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/layout/activity_sign_in.xml" value="0.41171875" />
+        <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/layout/activity_sign_up.xml" value="0.536" />
+      </map>
+    </option>
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="JDK" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>

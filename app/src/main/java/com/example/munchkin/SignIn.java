@@ -1,0 +1,164 @@
+package com.example.munchkin;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Objects;
+
+public class SignIn extends AppCompatActivity {
+    //declare variables
+    TextInputLayout mtilSignInUsername, mtilSignInPW;
+    TextInputEditText metSignInUsername, metSignInPW;
+    Button mbtnSignIn;
+    SharedPreferences spMunchkin;
+
+    //key name
+    private static final String SP_NAME = "drivmePref";
+    private static final String KEY_USERNAME = "username";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_sign_in);
+
+        //obtaining the View with specific ID
+        mtilSignInUsername = findViewById(R.id.tilSignInUsername);
+        mtilSignInPW = findViewById(R.id.tilSignInPW);
+        metSignInUsername = findViewById(R.id.etSignInUsername);
+        metSignInPW = findViewById(R.id.etSignInPW);
+        mbtnSignIn = findViewById(R.id.btnSignIn);
+
+        spMunchkin = getSharedPreferences(SP_NAME, MODE_PRIVATE);
+
+        //get username from shared preference
+        String uName = spMunchkin.getString(KEY_USERNAME, null);
+
+        //check if user signed in or not
+        if(uName != null){
+            startActivity(new Intent(SignIn.this, MainActivity.class));
+            finish();
+        }
+
+        metSignInUsername.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //Nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mtilSignInUsername.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //Nothing
+            }
+        });
+
+        metSignInPW.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                //Nothing
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mtilSignInPW.setErrorEnabled(false);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                //Nothing
+            }
+        });
+
+        mbtnSignIn.setOnClickListener(v -> {
+            //check condition (fields not empty) before proceed to database
+            if(Objects.requireNonNull(metSignInUsername.getText()).toString().trim().isEmpty()){
+                mtilSignInUsername.setError("Field cannot be empty!");
+            }
+            else if(Objects.requireNonNull(metSignInPW.getText()).toString().trim().isEmpty()){
+                mtilSignInPW.setError("Field cannot be empty!");
+            }
+            else{
+                FirebaseFirestore munchkinDB = FirebaseFirestore.getInstance();
+                String id = metSignInUsername.getText().toString();
+                String pw = metSignInPW.getText().toString();
+
+                munchkinDB.collection("Account Details")
+                        .document(id)
+                        .get()
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                DocumentSnapshot docResult = task.getResult();
+
+                                if (docResult != null) {
+                                    //check the existence of username
+                                    if (docResult.exists()) {
+                                        String pw2 = docResult.getString("Password");
+                                        //check if the password matched
+                                        if (pw.matches(Objects.requireNonNull(pw2))) {
+                                            //save necessary data for later use
+                                            SharedPreferences.Editor spEditor = spMunchkin.edit();
+                                            spEditor.putString(KEY_USERNAME, id);
+                                            spEditor.apply();
+
+                                            startActivity(new Intent(SignIn.this, MainActivity.class));
+                                            finish();
+                                        }
+                                        else {
+                                            Toast.makeText(SignIn.this, "Wrong Username or Password!", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    }
+                                    else{
+                                        mtilSignInUsername.setError("Username does not exist!");
+                                    }
+                                }
+                            }
+                        });
+            }
+        });
+    }
+
+    //quit app
+    @Override
+    public void onBackPressed() {
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Leaving Munchkin?");
+        alertDialogBuilder
+                .setMessage("Click yes to exit!")
+                .setCancelable(false)
+                .setPositiveButton("Yes", (dialog, id) -> finish())
+                .setNegativeButton("No", (dialog, id) -> dialog.cancel());
+
+        android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    //sign in -> forgot password
+    public void forgotPW(View view) {
+        startActivity(new Intent(SignIn.this, ForgotPassword.class));
+        finish();
+    }
+
+    //sign in -> sign up
+    public void signupText(View view) {
+        startActivity(new Intent(SignIn.this, SignUp.class));
+        finish();
+    }
+}

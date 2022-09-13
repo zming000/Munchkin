@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Munchkin</string>
+    <string name="underline_text_fp"><u>Forgot Password?</u></string>
+    <string name="underline_text_signup"><u>Sign Up</u></string>
+    <string name="underline_text_login"><u>Login</u></string>
+    <string name="underline_text_resend"><u>Resend OTP</u></string>
 </resources>
