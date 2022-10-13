@@ -26,7 +26,7 @@ public class SignIn extends AppCompatActivity {
     SharedPreferences spMunchkin;
 
     //key name
-    private static final String SP_NAME = "drivmePref";
+    private static final String SP_NAME = "munchkinPref";
     private static final String KEY_USERNAME = "username";
 
     @Override
@@ -34,13 +34,14 @@ public class SignIn extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        //obtaining the View with specific ID
+        //assign variables
         mtilSignInUsername = findViewById(R.id.tilSignInUsername);
         mtilSignInPW = findViewById(R.id.tilSignInPW);
         metSignInUsername = findViewById(R.id.etSignInUsername);
         metSignInPW = findViewById(R.id.etSignInPW);
         mbtnSignIn = findViewById(R.id.btnSignIn);
 
+        //initialize shared preference
         spMunchkin = getSharedPreferences(SP_NAME, MODE_PRIVATE);
 
         //get username from shared preference
@@ -109,7 +110,7 @@ public class SignIn extends AppCompatActivity {
                                 if (docResult != null) {
                                     //check the existence of username
                                     if (docResult.exists()) {
-                                        String pw2 = docResult.getString("Password");
+                                        String pw2 = docResult.getString("password");
                                         //check if the password matched
                                         if (pw.matches(Objects.requireNonNull(pw2))) {
                                             //save necessary data for later use
@@ -143,7 +144,10 @@ public class SignIn extends AppCompatActivity {
         alertDialogBuilder
                 .setMessage("Click yes to exit!")
                 .setCancelable(false)
-                .setPositiveButton("Yes", (dialog, id) -> finish())
+                .setPositiveButton("Yes", (dialog, id) -> {
+                    finishAffinity();
+                    finish();
+                })
                 .setNegativeButton("No", (dialog, id) -> dialog.cancel());
 
         android.app.AlertDialog alertDialog = alertDialogBuilder.create();

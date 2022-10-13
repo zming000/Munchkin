@@ -65,7 +65,6 @@ public class GetPhoneNumber extends AppCompatActivity {
                 intent.putExtra("email", getIntent().getStringExtra("emailNext"));
                 intent.putExtra("password", getIntent().getStringExtra("passwordNext"));
 
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });

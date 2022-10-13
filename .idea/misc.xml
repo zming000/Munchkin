@@ -3,6 +3,16 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Zming/Documents/INTI/340CT Software Quality And Process Management/Munchkin/app/src/main/res/layout/activity_forgot_password.xml" value="0.2537037037037037" />
+        <entry key="..\:/Users/Zming/Documents/INTI/340CT Software Quality And Process Management/Munchkin/app/src/main/res/layout/activity_fpw_otp.xml" value="0.2537037037037037" />
+        <entry key="..\:/Users/Zming/Documents/INTI/340CT Software Quality And Process Management/Munchkin/app/src/main/res/layout/activity_get_phone_number.xml" value="0.2537037037037037" />
+        <entry key="..\:/Users/Zming/Documents/INTI/340CT Software Quality And Process Management/Munchkin/app/src/main/res/layout/activity_main.xml" value="0.22314814814814815" />
+        <entry key="..\:/Users/Zming/Documents/INTI/340CT Software Quality And Process Management/Munchkin/app/src/main/res/layout/activity_otp_verification.xml" value="0.2537037037037037" />
+        <entry key="..\:/Users/Zming/Documents/INTI/340CT Software Quality And Process Management/Munchkin/app/src/main/res/layout/activity_otpverification.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/Zming/Documents/INTI/340CT Software Quality And Process Management/Munchkin/app/src/main/res/layout/activity_reset_pw.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/Zming/Documents/INTI/340CT Software Quality And Process Management/Munchkin/app/src/main/res/layout/activity_reset_success.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/Zming/Documents/INTI/340CT Software Quality And Process Management/Munchkin/app/src/main/res/layout/activity_sign_in.xml" value="0.27447916666666666" />
+        <entry key="..\:/Users/Zming/Documents/INTI/340CT Software Quality And Process Management/Munchkin/app/src/main/res/layout/activity_sign_up.xml" value="0.27447916666666666" />
         <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/drawable/btn_rounded.xml" value="0.2105" />
         <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/drawable/ic_email.xml" value="0.2105" />
         <entry key="..\:/Users/Zming/Documents/INTI/Final Year Project/Munchkin/app/src/main/res/drawable/ic_lock.xml" value="0.2105" />

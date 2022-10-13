@@ -135,7 +135,7 @@ public class ResetPW extends AppCompatActivity {
                         //check the existence of document ID
                         if(Objects.requireNonNull(document).exists()){
                             Map<String,Object> userAcc = new HashMap<>();
-                            userAcc.put("Password", Objects.requireNonNull(metResetPW.getText()).toString());
+                            userAcc.put("password", Objects.requireNonNull(metResetPW.getText()).toString());
 
                             db.collection("Account Details").document(id)
                                     .update(userAcc)
@@ -159,7 +159,8 @@ public class ResetPW extends AppCompatActivity {
                 .setCancelable(false)
                 .setPositiveButton("Yes",
                         (dialog, id) -> {
-                    startActivity(new Intent(ResetPW.this, SignIn.class));
+                            startActivity(new Intent(ResetPW.this, SignIn.class));
+                            finishAffinity();
                             finish();
                         })
                 .setNegativeButton("No", (dialog, id) -> dialog.cancel());
