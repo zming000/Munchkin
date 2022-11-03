@@ -9,4 +9,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="btn_color">#E6E6E6</color>
     <color name="text_blue">#3A9DBE</color>
+
+    <color name="mainActivity_backgroundColor">#f5f8ff</color>
+    <color name="showOrderSummary_bgColor">#e1e4eb</color>
+
+    <color name="horizontal_line">#b0b0b0</color>
+    <color name="horizontal_line2">#dde5f3</color>
 </resources>

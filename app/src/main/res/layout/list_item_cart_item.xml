@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="10dp"
+    android:padding="20dp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="10dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/list_item_constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/bookCover_imageView"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="20dp"
+            android:src="@drawable/ic_sample_book"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/bookTitle_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Example Title"
+            android:layout_marginStart="10dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintStart_toEndOf="@+id/bookCover_imageView"
+            app:layout_constraintTop_toTopOf="@+id/bookCover_imageView" />
+
+        <TextView
+            android:id="@+id/bookPrice_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RM 10.50"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintTop_toBottomOf="@+id/bookTitle_textView"
+            app:layout_constraintStart_toStartOf="@+id/bookTitle_textView" />
+
+        <ImageView
+            android:id="@+id/decreaseBookQuantity_icon"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_remove"
+            app:layout_constraintEnd_toStartOf="@+id/bookQuantity_textView"
+            app:layout_constraintTop_toTopOf="@+id/increaseBookQuantity_icon" />
+
+        <TextView
+            android:id="@+id/bookQuantity_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:text="1"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/increaseBookQuantity_icon"
+            app:layout_constraintTop_toTopOf="@+id/increaseBookQuantity_icon" />
+
+        <ImageView
+            android:id="@+id/increaseBookQuantity_icon"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="20dp"
+            app:layout_constraintTop_toBottomOf="@id/bookCover_imageView"
+            android:src="@drawable/ic_add_book"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</androidx.cardview.widget.CardView>
