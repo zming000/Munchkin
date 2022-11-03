@@ -20,6 +20,7 @@ public class ResetSuccess extends AppCompatActivity {
 
         mbtnGotoLogin.setOnClickListener(view -> {
             startActivity(new Intent(ResetSuccess.this, SignIn.class));
+            finishAffinity();
             finish();
         });
     }
@@ -28,6 +29,7 @@ public class ResetSuccess extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         startActivity(new Intent(ResetSuccess.this, SignIn.class));
+        finishAffinity();
         finish();
     }
 }

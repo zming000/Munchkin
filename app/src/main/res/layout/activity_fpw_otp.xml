@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".OTPVerification">
+    tools:context=".FPWOtp">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,41 +17,30 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvSignUp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:layout_marginStart="40dp"
-                android:text="Sign Up"
-                android:textColor="@color/primary"
-                android:textSize="31sp"
-                android:textStyle="bold" />
-
             <ImageView
-                android:id="@+id/otpLogo"
+                android:id="@+id/fpwOTPLogo"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="65dp"
+                android:layout_marginTop="80dp"
                 android:layout_marginEnd="31dp"
                 android:src="@drawable/icon_otp" />
 
             <TextView
-                android:id="@+id/tvOTPVerification"
+                android:id="@+id/tvFPWVerificationText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginBottom="20dp"
                 android:text="OTP Verification"
                 android:textColor="@color/black"
                 android:textSize="31sp"
                 android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/tvOTPText"
+                android:id="@+id/tvFPWText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -61,7 +50,7 @@
                 android:textAlignment="center"/>
 
             <TextView
-                android:id="@+id/tvPhoneText"
+                android:id="@+id/tvFPWPhoneText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -71,18 +60,18 @@
                 android:textAlignment="center"/>
 
             <com.chaos.view.PinView
-                android:id="@+id/pvOTP"
+                android:id="@+id/pvFPWOtp"
                 style="@style/PinWidget.PinView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="35dp"
                 android:inputType="number"
                 android:cursorVisible="true"
                 android:itemBackground="@color/btn_color"
                 app:itemCount="6"
-                app:itemWidth="40dp"
-                app:itemHeight="40dp"
+                app:itemWidth="45dp"
+                app:itemHeight="45dp"
                 app:itemRadius="10dp"
                 app:lineWidth="1dp"
                 app:hideLineWhenFilled="true"/>
@@ -94,10 +83,9 @@
                 android:layout_marginTop="8dp">
 
                 <TextView
-                    android:id="@+id/tvTextReceive"
+                    android:id="@+id/tvReceiveOTP"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
                     android:text="Didn't receive OTP?"
                     android:textColor="@color/black"
                     android:textSize="16sp"
@@ -106,25 +94,36 @@
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <TextView
-                    android:id="@+id/tvResend"
+                    android:id="@+id/tvFPWResend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="resendOTP"
+                    android:layout_marginStart="5dp"
                     android:text="@string/underline_text_resend"
                     android:textColor="@color/text_blue"
                     android:textSize="16sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/tvTextReceive"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvReceiveOTP"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/tvTextReceive"
-                    app:layout_constraintTop_toTopOf="@+id/tvTextReceive" />
+                    app:layout_constraintStart_toEndOf="@+id/tvReceiveOTP"
+                    app:layout_constraintTop_toTopOf="@+id/tvReceiveOTP" />
+
+                <TextView
+                    android:id="@+id/tvTimer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:textColor="#1991D0"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/tvReceiveOTP"
+                    app:layout_constraintStart_toEndOf="@+id/tvReceiveOTP"
+                    app:layout_constraintTop_toTopOf="@+id/tvReceiveOTP" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnVerify"
+                android:id="@+id/btnFPWVerify"
                 android:layout_width="280dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginTop="45dp"
+                android:layout_marginTop="100dp"
                 android:layout_marginBottom="10dp"
                 android:background="@drawable/btn_rounded"
                 android:text="Verify OTP"

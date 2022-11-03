@@ -97,7 +97,7 @@ public class ForgotPassword extends AppCompatActivity {
                                 if (document != null) {
                                     //check the existence of document/username
                                     if (document.exists()) {
-                                        String phText = document.getString("Phone Number");
+                                        String phText = document.getString("phoneNumber");
 
                                         if(Objects.requireNonNull(phText).equals("+60" + metFPWPhoneNumber.getText().toString())) {
                                             //proceed to verify otp
@@ -105,7 +105,6 @@ public class ForgotPassword extends AppCompatActivity {
                                             intent.putExtra("username", id);
                                             intent.putExtra("phNum", "+60" + metFPWPhoneNumber.getText().toString());
 
-                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                             startActivity(intent);
                                         }
                                         else{
@@ -123,5 +122,8 @@ public class ForgotPassword extends AppCompatActivity {
     }
 
     public void backToLogin(View view) {
+        startActivity(new Intent(ForgotPassword.this, SignIn.class));
+        finishAffinity();
+        finish();
     }
 }

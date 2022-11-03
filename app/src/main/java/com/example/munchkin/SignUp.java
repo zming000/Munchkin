@@ -62,13 +62,37 @@ public class SignUp extends AppCompatActivity {
     //sign up -> sign in
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(SignUp.this, SignIn.class));
-        finish();
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(SignUp.this);
+        alertDialogBuilder.setTitle("Discard Process");
+        alertDialogBuilder
+                .setMessage("Do you wish to discard and go back login?")
+                .setCancelable(false)
+                .setPositiveButton("Discard",
+                        (dialog, id) -> {
+                            startActivity(new Intent(SignUp.this, SignIn.class));
+                            finishAffinity();
+                            finish();
+                        });
+
+        android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     public void loginText(View view) {
-        startActivity(new Intent(SignUp.this, SignIn.class));
-        finish();
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(SignUp.this);
+        alertDialogBuilder.setTitle("Discard Process");
+        alertDialogBuilder
+                .setMessage("Do you wish to discard and go back login?")
+                .setCancelable(false)
+                .setPositiveButton("Discard",
+                        (dialog, id) -> {
+                            startActivity(new Intent(SignUp.this, SignIn.class));
+                            finishAffinity();
+                            finish();
+                        });
+
+        android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
     }
 
     //Set error message on each field to ensure correct input
@@ -236,7 +260,7 @@ public class SignUp extends AppCompatActivity {
                 metUsername.getText().toString().matches(".*[a-zA-Z]+.*") &&
                 digitExist(metUsername.getText().toString()) &&
                 !uppercaseExist(metUsername.getText().toString()) &&
-                (Objects.requireNonNull(metUsername.getText()).length() > 7);
+                (Objects.requireNonNull(metUsername.getText()).length() >= 7);
 
         //check input condition (without digit)
         statusFName = !digitExist(Objects.requireNonNull(metFName.getText()).toString());
@@ -282,7 +306,6 @@ public class SignUp extends AppCompatActivity {
                             intent.putExtra("emailNext", Objects.requireNonNull(metEmail.getText()).toString());
                             intent.putExtra("passwordNext", Objects.requireNonNull(metPassword.getText()).toString());
 
-                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(intent);
                         }
                     }

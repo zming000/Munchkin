@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -20,13 +21,14 @@ import com.google.firebase.auth.PhoneAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class OTPVerification extends AppCompatActivity {
     //declare variables
-    TextView mtvPhoneText;
+    TextView mtvPhoneText, mtvResend, mtvTimer;
     PinView mpvOTP;
     Button mbtnVerify;
     FirebaseAuth mAuth;
@@ -35,10 +37,12 @@ public class OTPVerification extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_otpverification);
+        setContentView(R.layout.activity_otp_verification);
 
         //obtaining the View with specific ID
         mtvPhoneText = findViewById(R.id.tvPhoneText);
+        mtvResend = findViewById(R.id.tvResend);
+        mtvTimer = findViewById(R.id.tvTimer);
         mpvOTP = findViewById(R.id.pvOTP);
         mbtnVerify = findViewById(R.id.btnVerify);
 
@@ -51,6 +55,9 @@ public class OTPVerification extends AppCompatActivity {
 
         //send otp
         sendOTPtoUserPhone(phNumT);
+
+        //resend otp
+        resendOTP();
 
         mbtnVerify.setOnClickListener(v -> {
             String value = Objects.requireNonNull(mpvOTP.getText()).toString();
@@ -124,12 +131,12 @@ public class OTPVerification extends AppCompatActivity {
 
         //details to insert into firestore
         Map<String,Object> userAcc = new HashMap<>();
-        userAcc.put("Username", value);
-        userAcc.put("First Name", getIntent().getStringExtra("fName"));
-        userAcc.put("Last Name", getIntent().getStringExtra("lName"));
-        userAcc.put("Phone Number", getIntent().getStringExtra("phoneNumber"));
-        userAcc.put("Email", getIntent().getStringExtra("email"));
-        userAcc.put("Password", getIntent().getStringExtra("password"));
+        userAcc.put("username", value);
+        userAcc.put("firstName", getIntent().getStringExtra("fName"));
+        userAcc.put("lastName", getIntent().getStringExtra("lName"));
+        userAcc.put("phoneNumber", getIntent().getStringExtra("phoneNumber"));
+        userAcc.put("email", getIntent().getStringExtra("email"));
+        userAcc.put("password", getIntent().getStringExtra("password"));
 
         db.collection("Account Details").document(value)
                 .set(userAcc)
@@ -139,8 +146,9 @@ public class OTPVerification extends AppCompatActivity {
                     alertDialogBuilder
                             .setMessage("Let's try to login!")
                             .setCancelable(false)
-                            .setPositiveButton("Yes", (dialog, id) -> {
+                            .setPositiveButton("Login", (dialog, id) -> {
                                 startActivity(new Intent(OTPVerification.this, SignIn.class));
+                                finishAffinity();
                                 finish();
                             });
 
@@ -153,7 +161,7 @@ public class OTPVerification extends AppCompatActivity {
                     alertDialogBuilder
                             .setMessage("Please try again!")
                             .setCancelable(false)
-                            .setPositiveButton("OK",
+                            .setPositiveButton("Try Again",
                                     (dialog, id) -> {
                                         startActivity(new Intent(OTPVerification.this, SignUp.class));
                                         finish();
@@ -164,8 +172,35 @@ public class OTPVerification extends AppCompatActivity {
                 });
     }
 
-    public void resendOTP(View view) {
-        String num = getIntent().getStringExtra("tPhoneNumber");
-        sendOTPtoUserPhone(num);
+    public void resendOTP() {
+        mtvResend.setOnClickListener(view1 -> {
+            String num = getIntent().getStringExtra("tPhoneNumber");
+            sendOTPtoUserPhone(num);
+            mtvResend.setVisibility(View.GONE);
+            mtvTimer.setVisibility(View.VISIBLE);
+
+            //countdown timer 60 seconds
+            //initialize timer duration
+            long duration = TimeUnit.MINUTES.toMillis(1);
+
+            //Initialize countdown timer
+            new CountDownTimer(duration, 1000) {
+                @Override
+                public void onTick(long l) {
+                    String secDuration =  String.format(Locale.ENGLISH, "%02d : %02d",
+                            TimeUnit.MILLISECONDS.toMinutes(l),
+                            TimeUnit.MILLISECONDS.toSeconds(l) -
+                                    TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(1)));
+                    //Set converted string
+                    mtvTimer.setText(secDuration);
+                }
+
+                @Override
+                public void onFinish() {
+                    mtvTimer.setVisibility(View.GONE);
+                    mtvResend.setVisibility(View.VISIBLE);
+                }
+            }.start();
+        });
     }
 }
