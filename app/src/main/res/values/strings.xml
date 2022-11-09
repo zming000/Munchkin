@@ -4,4 +4,29 @@
     <string name="underline_text_signup"><u>Sign Up</u></string>
     <string name="underline_text_login"><u>Login</u></string>
     <string name="underline_text_resend"><u>Resend OTP</u></string>
+
+    //shopping cart
+    <string name="shoppingCart_main_title">Cart</string>
+    <string name="shoppingCart_checkout_button">Checkout</string>
+    <string name="no_items_in_cart">Cart is empty</string>
+    <string name="CheckoutPage_main_title">Checkout</string>
+    <string name="show_order_summary">Show order summary</string>
+    <string name="checkoutPage_progressBar_information">Information</string>
+    <string name="checkoutPage_progressBar_payment">Payment</string>
+    <string name="checkoutPage_progressBar_shipping">Shipping</string>
+    <string name="checkout1_contactInfo">Contact Info</string>
+    <string name="checkout1_shippingInfo">Shipping Address</string>
+    <string name="shippingPage_shipTo_label">Ship to</string>
+    <string name="shippingPage_contactEmail_label">Contact email</string>
+    <string name="checkout2_shippingMethod">Shipping Method</string>
+    <string name="pos_laju">Pos Laju   (RM 6)</string>
+    <string name="dhl">DHL   (RM 10)</string>
+    <string name="shippingPage_shipMethod_label">Method</string>
+    <string name="payment_label"><u>Payment</u></string>
+    <string name="paymentMethod_rb1_text">iPay88 Malaysia</string>
+    <string name="paymentMethod_rb2_text">eGHL Payment Gateway</string>
+    <string name="checkout3_payment">Payment</string>
+    <string name="checkout3_paymentDesc">All transactions are secure and encrypted.</string>
+    <string name="checkout3_paymentDesc2">After clicking \"Complete Order\", you will be redirected to the selected payment method\'s website to complete your purchase securely.</string>
+
 </resources>
