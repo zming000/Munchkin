@@ -16,6 +16,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class SignIn extends AppCompatActivity {
@@ -117,6 +119,13 @@ public class SignIn extends AppCompatActivity {
                                             SharedPreferences.Editor spEditor = spMunchkin.edit();
                                             spEditor.putString(KEY_USERNAME, id);
                                             spEditor.apply();
+
+                                            FirebaseFirestore updateStatus = FirebaseFirestore.getInstance();
+                                            Map<String,Object> login = new HashMap<>();
+                                            login.put("accountStatus", "Online");
+
+                                            updateStatus.collection("Account Details").document(id)
+                                                    .update(login);
 
                                             startActivity(new Intent(SignIn.this, MainActivity.class));
                                             finish();

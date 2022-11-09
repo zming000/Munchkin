@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
 
     //key name
     private static final String SP_NAME = "munchkinPref";
-    private static final String KEY_ID = "userID";
+    private static final String KEY_USERNAME = "username";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
         mbtnLogout.setOnClickListener(view -> {
             //logout
             spMunchkin = getSharedPreferences(SP_NAME, MODE_PRIVATE);
-            String id = spMunchkin.getString(KEY_ID, null);
+            String id = spMunchkin.getString(KEY_USERNAME, null);
             spMunchkin.edit().clear().commit();
 
             FirebaseFirestore updateStatus = FirebaseFirestore.getInstance();
@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
             updateStatus.collection("Account Details").document(id)
                     .update(logout);
 
-            startActivity(new Intent(getApplicationContext(), SignIn.class));
+            startActivity(new Intent(MainActivity.this, SignIn.class));
             finishAffinity();
             finish();
         });

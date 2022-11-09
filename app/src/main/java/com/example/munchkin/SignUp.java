@@ -72,7 +72,8 @@ public class SignUp extends AppCompatActivity {
                             startActivity(new Intent(SignUp.this, SignIn.class));
                             finishAffinity();
                             finish();
-                        });
+                        })
+                .setNegativeButton("No", (dialog, id) -> dialog.cancel());
 
         android.app.AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();
@@ -89,7 +90,8 @@ public class SignUp extends AppCompatActivity {
                             startActivity(new Intent(SignUp.this, SignIn.class));
                             finishAffinity();
                             finish();
-                        });
+                        })
+                .setNegativeButton("No", (dialog, id) -> dialog.cancel());
 
         android.app.AlertDialog alertDialog = alertDialogBuilder.create();
         alertDialog.show();

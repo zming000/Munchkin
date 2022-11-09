@@ -50,11 +50,11 @@ public class OTPVerification extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
 
         //get phone number
-        String phNumT = getIntent().getStringExtra("phoneNumber");
-        mtvPhoneText.setText(phNumT);
+        String phNum = getIntent().getStringExtra("phoneNumber");
+        mtvPhoneText.setText(phNum);
 
         //send otp
-        sendOTPtoUserPhone(phNumT);
+        sendOTPtoUserPhone(phNum);
 
         //resend otp
         resendOTP();
@@ -174,7 +174,7 @@ public class OTPVerification extends AppCompatActivity {
 
     public void resendOTP() {
         mtvResend.setOnClickListener(view1 -> {
-            String num = getIntent().getStringExtra("tPhoneNumber");
+            String num = getIntent().getStringExtra("phoneNumber");
             sendOTPtoUserPhone(num);
             mtvResend.setVisibility(View.GONE);
             mtvTimer.setVisibility(View.VISIBLE);

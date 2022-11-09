@@ -121,6 +121,22 @@ public class ForgotPassword extends AppCompatActivity {
         });
     }
 
+    public void onBackPressed() {
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Back to Sign In");
+        alertDialogBuilder
+                .setMessage("Remember password?")
+                .setCancelable(false)
+                .setPositiveButton("Login", (dialog, id) -> {
+                    startActivity(new Intent(ForgotPassword.this, SignIn.class));
+                    finish();
+                })
+                .setNegativeButton("No", (dialog, id) -> dialog.cancel());
+
+        android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
     public void backToLogin(View view) {
         startActivity(new Intent(ForgotPassword.this, SignIn.class));
         finishAffinity();
