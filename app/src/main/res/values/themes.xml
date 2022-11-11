@@ -7,4 +7,9 @@
         <item name="android:statusBarColor" tools:targetApi="l">@color/primary</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="dialogAnimation">
+        <item name="android:windowEnterAnimation">@anim/slide_scale_in</item>
+        <item name="android:windowExitAnimation">@anim/slide_scale_out</item>
+    </style>
 </resources>

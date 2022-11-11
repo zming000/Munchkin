@@ -28,5 +28,6 @@
     <string name="checkout3_payment">Payment</string>
     <string name="checkout3_paymentDesc">All transactions are secure and encrypted.</string>
     <string name="checkout3_paymentDesc2">After clicking \"Complete Order\", you will be redirected to the selected payment method\'s website to complete your purchase securely.</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
