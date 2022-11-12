@@ -24,7 +24,6 @@ public class AdminMainActivity extends AppCompatActivity {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        getSupportActionBar().hide();
 
         setContentView(R.layout.activity_main_admin);
 
@@ -32,7 +31,24 @@ public class AdminMainActivity extends AppCompatActivity {
         adminBottomNavView = findViewById(R.id.adminBottomNav);
         adminMenu = adminBottomNavView.getMenu();
         adminBottomNavView.setOnItemSelectedListener(adminNavListener);
-        getSupportFragmentManager().beginTransaction().replace(R.id.adminPageContainer, new AdminFragment()).commit();
+
+        int intentFragment = 0;
+
+        //check if got intent
+        Bundle extra = getIntent().getExtras();
+        if (extra != null)
+        {
+            intentFragment = extra.getInt("loadOrderFrag");
+        }
+
+        if (intentFragment == 1)
+        {
+            getSupportFragmentManager().beginTransaction().replace(R.id.adminPageContainer, new AdminFragment()).commit();
+        }
+        else
+        {
+            getSupportFragmentManager().beginTransaction().replace(R.id.adminPageContainer, new AdminFragment()).commit();
+        }
     }
 
     private NavigationBarView.OnItemSelectedListener adminNavListener =

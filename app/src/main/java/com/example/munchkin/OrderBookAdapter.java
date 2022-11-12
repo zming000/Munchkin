@@ -97,8 +97,8 @@ public class OrderBookAdapter extends RecyclerView.Adapter<OrderBookAdapter.Orde
         DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
         String tempPrice = formatter.format(ob.mBook.getBookPrice());
 
-        holder.mPriceTV.setText(tempPrice);
-        holder.mCollectionTV.setText("RM" + ob.mBook.getBookCollection());
+        holder.mPriceTV.setText("RM" + tempPrice);
+        holder.mCollectionTV.setText(ob.mBook.getBookCollection());
 
         tempPrice = formatter.format(ob.totalBookPrice);
 

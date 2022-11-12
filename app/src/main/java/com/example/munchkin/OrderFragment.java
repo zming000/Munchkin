@@ -90,52 +90,37 @@ public class OrderFragment extends Fragment {
                                 String custName = document.getString("custName");
                                 String shipAddress = document.getString("shippingAddress");
 
+                                int totalItem = Integer.parseInt(document.getString("totalItem"));
+                                double totalPrice = Double.parseDouble(document.getString("totalPrice"));
+
                                 ArrayList<String> tempBookId = new ArrayList<String>();
                                 tempBookId = (ArrayList<String>) document.get("orderedItems");
 
-                                ArrayList<OrderBook> orderedBooks = new ArrayList<OrderBook>();
-                                int totalItem = document.getLong("totalItem").intValue();
-                                double totalPrice = document.getLong("totalPrice");
+                                ArrayList<String> tempBookTitle = new ArrayList<String>();
+                                tempBookTitle = (ArrayList<String>) document.get("orderedItemsName");
 
-                                Log.d("TEST", tempBookId.get(0) + tempBookId.get(1));
+                                ArrayList<String> tempBookPrice = new ArrayList<String>();
+                                tempBookPrice = (ArrayList<String>) document.get("orderedItemsPrice");
+
+                                ArrayList<String> tempBookCollection = new ArrayList<String>();
+                                tempBookCollection = (ArrayList<String>) document.get("orderedItemsCollection");
+
+                                ArrayList<String> tempBookQty = new ArrayList<String>();
+                                tempBookQty = (ArrayList<String>) document.get("orderedItemsQty");
+
+                                ArrayList<OrderBook> orderedBooks = new ArrayList<OrderBook>();
 
                                 for (int i=0; i<tempBookId.size(); i++)
                                 {
-                                    //get book data object from database (search for book using bookId)
-                                    db.collection("books").document(tempBookId.get(i))
-                                            .get()
-                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                    if (task.isSuccessful())
-                                                    {
-                                                        DocumentSnapshot bDocument = task.getResult();
-                                                        if (bDocument.exists())
-                                                        {
-                                                            String bId = bDocument.getId();
-                                                            String bTitle = bDocument.getString("title");
-                                                            double bPrice = Double.parseDouble(bDocument.getString("price"));
-                                                            String bCollection = bDocument.getString("collection");
+                                    //create book object
+                                    Book mBook = new Book(tempBookId.get(i), tempBookTitle.get(i), Double.parseDouble(tempBookPrice.get(i)), tempBookCollection.get(i));
 
-                                                            //get book quantity
-                                                            int bQty = document.getLong(bId).intValue();
+                                    //create orderBook object
+                                    int tQty = Integer.parseInt(tempBookQty.get(i));
+                                    double tPrice = tQty * Double.parseDouble(tempBookPrice.get(i));
+                                    OrderBook mOrderBook = new OrderBook(mBook, tQty, tPrice);
 
-                                                            //calculate the price
-                                                            double bTotalPrice = bQty * bPrice;
-
-                                                            //create OrderBook object & add into arraylist
-                                                            Book mBook = new Book(bId, bTitle, bPrice, bCollection);
-                                                            OrderBook mOrderBook = new OrderBook(mBook, bQty, bTotalPrice);
-                                                            orderedBooks.add(mOrderBook);
-
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        Log.d("GET_BOOK_FOR_ORDER_FAIL", "",task.getException());
-                                                    }
-                                                }
-                                            });
+                                    orderedBooks.add(mOrderBook);
                                 }
 
                                 //create order object
