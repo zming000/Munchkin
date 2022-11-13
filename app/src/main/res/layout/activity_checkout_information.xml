@@ -115,7 +115,6 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:animateLayoutChanges="true"
-                tools:visibility="visible"
                 android:visibility="gone">
 
                 <androidx.recyclerview.widget.RecyclerView
@@ -264,7 +263,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:text=">"
+                        android:text="&gt;"
                         android:textColor="@color/black"
                         android:textSize="16dp"
                         app:layout_constraintStart_toEndOf="@+id/progressBar_information_textView"
@@ -286,7 +285,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
-                        android:text=">"
+                        android:text="&gt;"
                         android:textColor="@color/black"
                         android:textSize="16dp"
                         app:layout_constraintStart_toEndOf="@+id/progressBar_shipping_textView"

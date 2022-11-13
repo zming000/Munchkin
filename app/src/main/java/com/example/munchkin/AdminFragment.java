@@ -13,11 +13,8 @@ import android.widget.ImageView;
 
 public class AdminFragment extends Fragment {
 
-    private ImageView mBackBtn;
-
-    private CardView mAddBookBtn;
-    private CardView mEditBookBtn;
-    private CardView mRemoveBookBtn;
+    ImageView mBackBtn;
+    CardView mAddBookBtn, mEditBookBtn, mRemoveBookBtn;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,33 +34,13 @@ public class AdminFragment extends Fragment {
         mRemoveBookBtn = view.findViewById(R.id.AdminFragment_removeBookCard);
 
 
-        mBackBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getActivity().finish();
-            }
-        });
+        mBackBtn.setOnClickListener(view1 -> getActivity().finish());
 
-        mAddBookBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openAddBookActivity();
-            }
-        });
+        mAddBookBtn.setOnClickListener(view12 -> openAddBookActivity());
 
-        mEditBookBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openEditBookActivity();
-            }
-        });
+        mEditBookBtn.setOnClickListener(view13 -> openEditBookActivity());
 
-        mRemoveBookBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openRemoveBookActivity();
-            }
-        });
+        mRemoveBookBtn.setOnClickListener(view14 -> openRemoveBookActivity());
 
         return view;
     }

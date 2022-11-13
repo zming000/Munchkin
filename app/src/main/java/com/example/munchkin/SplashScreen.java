@@ -13,10 +13,10 @@ import android.widget.ImageView;
 
 public class SplashScreen extends AppCompatActivity {
 
-    private static int SPLASH_SCREEN = 5000;
+    private static final int SPLASH_SCREEN = 5000;
 
-    private Animation topAnim;
-    private ImageView appLogo;
+    Animation topAnim;
+    ImageView appLogo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +35,9 @@ public class SplashScreen extends AppCompatActivity {
 
         appLogo.setAnimation(topAnim);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = new Intent(SplashScreen.this, SignIn.class);
-                startActivity(intent);
-                finish();
-            }
+        new Handler().postDelayed(() -> {
+            startActivity(new Intent(SplashScreen.this, SignIn.class));
+            finish();
         }, SPLASH_SCREEN);
     }
 }

@@ -50,8 +50,14 @@ public class SignIn extends AppCompatActivity {
         String uName = spMunchkin.getString(KEY_USERNAME, null);
 
         //check if user signed in or not
-        if(uName != null){
+        if(uName.equals("adminTest01")){
+            startActivity(new Intent(SignIn.this, AdminMainActivity.class));
+            finishAffinity();
+            finish();
+        }
+        else if(uName != null){
             startActivity(new Intent(SignIn.this, MainActivity.class));
+            finishAffinity();
             finish();
         }
 
@@ -102,6 +108,18 @@ public class SignIn extends AppCompatActivity {
                 String id = metSignInUsername.getText().toString();
                 String pw = metSignInPW.getText().toString();
 
+                //specially for admin only
+                if(id.equals("adminTest01") && pw.equals("Admin12345")){
+                    startActivity(new Intent(SignIn.this, AdminMainActivity.class));
+
+                    SharedPreferences.Editor spEditor = spMunchkin.edit();
+                    spEditor.putString(KEY_USERNAME, id);
+                    spEditor.apply();
+
+                    finishAffinity();
+                    finish();
+                }
+
                 munchkinDB.collection("Account Details")
                         .document(id)
                         .get()
@@ -115,25 +133,39 @@ public class SignIn extends AppCompatActivity {
                                         String pw2 = docResult.getString("password");
                                         //check if the password matched
                                         if (pw.matches(Objects.requireNonNull(pw2))) {
-                                            //save necessary data for later use
-                                            SharedPreferences.Editor spEditor = spMunchkin.edit();
-                                            spEditor.putString(KEY_USERNAME, id);
-                                            spEditor.apply();
+                                            String accStatus = docResult.getString("accountStatus");
 
-                                            FirebaseFirestore updateStatus = FirebaseFirestore.getInstance();
-                                            Map<String,Object> login = new HashMap<>();
-                                            login.put("accountStatus", "Online");
+                                            if(!accStatus.equals("Offline")){ //check if account being logged in
+                                                android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
+                                                alertDialogBuilder.setTitle("Account Logged In");
+                                                alertDialogBuilder
+                                                        .setMessage("Your account already logged in on another device, please log out from that device first!")
+                                                        .setCancelable(false)
+                                                        .setPositiveButton("OK", (dialog, iD) -> dialog.cancel());
 
-                                            updateStatus.collection("Account Details").document(id)
-                                                    .update(login);
+                                                android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+                                                alertDialog.show();
+                                            }
+                                            else {
+                                                //save necessary data for later use
+                                                SharedPreferences.Editor spEditor = spMunchkin.edit();
+                                                spEditor.putString(KEY_USERNAME, id);
+                                                spEditor.apply();
 
-                                            startActivity(new Intent(SignIn.this, MainActivity.class));
-                                            finish();
+                                                FirebaseFirestore updateStatus = FirebaseFirestore.getInstance();
+                                                Map<String, Object> login = new HashMap<>();
+                                                login.put("accountStatus", "Online");
+
+                                                updateStatus.collection("Account Details").document(id)
+                                                        .update(login);
+
+                                                startActivity(new Intent(SignIn.this, MainActivity.class));
+                                                finish();
+                                            }
                                         }
                                         else {
                                             Toast.makeText(SignIn.this, "Wrong Username or Password!", Toast.LENGTH_SHORT).show();
                                         }
-
                                     }
                                     else{
                                         mtilSignInUsername.setError("Username does not exist!");

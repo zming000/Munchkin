@@ -1,13 +1,10 @@
 package com.example.munchkin;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,27 +13,22 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class EditList extends AppCompatActivity {
 
-    private ImageView mBackBtn;
-    private TextView mNoBookTV;
+    ImageView mBackBtn;
+    TextView mNoBookTV;
 
     private ArrayList<Book> mBookList;
 
     private EditBookAdapter mAdapter;
     private RecyclerView mRecyclerView;
-    private FirebaseFirestore db;
+    FirebaseFirestore db;
     private ProgressDialog mProgressDialog;
 
     @Override
@@ -61,68 +53,55 @@ public class EditList extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        mBookList = new ArrayList<Book>();
+        mBookList = new ArrayList<>();
         mAdapter = new EditBookAdapter(EditList.this, mBookList);
 
         mRecyclerView.setAdapter(mAdapter);
 
         db.collection("books")
                 .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful())
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful())
+                    {
+                        for (QueryDocumentSnapshot document : task.getResult())
                         {
-                            for (QueryDocumentSnapshot document : task.getResult())
-                            {
-                                String id = document.getId();
-                                String title = document.getString("title");
-                                double price = Double.parseDouble(document.getString("price"));
-                                String collection = document.getString("collection");
+                            String id = document.getId();
+                            String title = document.getString("title");
+                            double price = Double.parseDouble(Objects.requireNonNull(document.getString("price")));
+                            String collection = document.getString("collection");
 
 
-                                Book mBook = new Book(id, title, price, collection);
-                                mBookList.add(mBook);
-                            }
+                            Book mBook = new Book(id, title, price, collection);
+                            mBookList.add(mBook);
+                        }
 
-                            mAdapter.notifyDataSetChanged();
-
-
-                            //check if arraylist is empty
-                            if (mAdapter.getItemCount() == 0)
-                            {
-                                mRecyclerView.setVisibility(View.GONE);
-                                mNoBookTV.setVisibility(View.VISIBLE);
-                            }
-                            else
-                            {
-                                mRecyclerView.setVisibility(View.VISIBLE);
-                                mNoBookTV.setVisibility(View.GONE);
-                            }
-
-                            if (mProgressDialog.isShowing()) {
-                                mProgressDialog.dismiss();
-                            }
+                        mAdapter.notifyDataSetChanged();
 
 
+                        //check if arraylist is empty
+                        if (mAdapter.getItemCount() == 0)
+                        {
+                            mRecyclerView.setVisibility(View.GONE);
+                            mNoBookTV.setVisibility(View.VISIBLE);
                         }
                         else
                         {
-                            Log.d("Error", "Error getting documents: ", task.getException());
-
-                            if (mProgressDialog.isShowing()) {
-                                mProgressDialog.dismiss();
-                            }
-
+                            mRecyclerView.setVisibility(View.VISIBLE);
+                            mNoBookTV.setVisibility(View.GONE);
                         }
+
+
+                    }
+                    else
+                    {
+                        Log.d("Error", "Error getting documents: ", task.getException());
+
+                    }
+                    if (mProgressDialog.isShowing()) {
+                        mProgressDialog.dismiss();
                     }
                 });
 
-        mBackBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        mBackBtn.setOnClickListener(view -> finish());
     }
 }

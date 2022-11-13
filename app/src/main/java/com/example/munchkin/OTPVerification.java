@@ -137,6 +137,7 @@ public class OTPVerification extends AppCompatActivity {
         userAcc.put("phoneNumber", getIntent().getStringExtra("phoneNumber"));
         userAcc.put("email", getIntent().getStringExtra("email"));
         userAcc.put("password", getIntent().getStringExtra("password"));
+        userAcc.put("accountStatus", "Offline");
 
         db.collection("Account Details").document(value)
                 .set(userAcc)

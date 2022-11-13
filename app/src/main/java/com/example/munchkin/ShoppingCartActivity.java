@@ -1,20 +1,13 @@
 package com.example.munchkin;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.AlarmClock;
-import android.util.AttributeSet;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -36,12 +29,12 @@ public class ShoppingCartActivity extends AppCompatActivity {
     //
     // views
     //
-    private ImageView mImgViewBack;
-    private TextView mMainTitle;
-    private Button mBtnCheckout;
+    ImageView mImgViewBack;
+    TextView mMainTitle;
+    Button mBtnCheckout;
 
-    private RecyclerView mCartItemRecyclerView;
-    private TextView mCartEmptyTextView;
+    RecyclerView mCartItemRecyclerView;
+    TextView mCartEmptyTextView;
 
 
     //
@@ -73,24 +66,14 @@ public class ShoppingCartActivity extends AppCompatActivity {
         mCartItemRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         //listeners...
-        mImgViewBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mImgViewBack.setOnClickListener(v -> finish());
 
-                finish();
+        mBtnCheckout.setOnClickListener(v -> {
 
-            }
-        });
+            //start checkout - information activity
+            Intent intent = new Intent(ShoppingCartActivity.this, CheckoutInformationActivity.class);
+            startActivity(intent);
 
-        mBtnCheckout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                //start checkout - information activity
-                Intent intent = new Intent(ShoppingCartActivity.this, CheckoutInformationActivity.class);
-                startActivity(intent);
-
-            }
         });
 
         mCartItemArrayList = new ArrayList<>();

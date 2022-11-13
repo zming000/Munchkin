@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
-import android.text.Html;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
@@ -20,16 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldPath;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -43,12 +33,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RemoveBookAdapter extends RecyclerView.Adapter<RemoveBookAdapter.RemoveBookHolder>{
 
-    private Context context;
-    private ArrayList<Book> bookList;
+    Context context;
+    ArrayList<Book> bookList;
 
     private Dialog mDialog;
-    private Button dialogYesBtn, dialogNoBtn;
-    private TextView dialogTV;
+    Button dialogYesBtn, dialogNoBtn;
+    TextView dialogTV;
 
     private FirebaseFirestore db;
 
@@ -59,13 +49,10 @@ public class RemoveBookAdapter extends RecyclerView.Adapter<RemoveBookAdapter.Re
         this.bookList = bookList;
     }
 
-    public class RemoveBookHolder extends RecyclerView.ViewHolder {
-        private ImageView mBookImage;
-        private TextView mBookIdTV;
-        private TextView mBookTitleTV;
-        private TextView mBookPriceTV;
-        private TextView mBookCollectionTV;
-        private Button mDeleteBtn;
+    public static class RemoveBookHolder extends RecyclerView.ViewHolder {
+        ImageView mBookImage;
+        TextView mBookIdTV, mBookTitleTV, mBookPriceTV, mBookCollectionTV;
+        Button mDeleteBtn;
 
         public RemoveBookHolder(final View view) {
             super(view);
@@ -96,18 +83,10 @@ public class RemoveBookAdapter extends RecyclerView.Adapter<RemoveBookAdapter.Re
         {
             File localFile = File.createTempFile("tempFile", ".jpg");
             mStorageReference.getFile(localFile)
-                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                            holder.mBookImage.setImageBitmap(bitmap);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d("RETRIEVE_FAIL", "Retrieving book image failed: " + b.bookId);
-                        }
-                    });
+                    .addOnSuccessListener(taskSnapshot -> {
+                        Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                        holder.mBookImage.setImageBitmap(bitmap);
+                    }).addOnFailureListener(e -> Log.d("RETRIEVE_FAIL", "Retrieving book image failed: " + b.bookId));
 
         }
         catch (IOException e) {
@@ -123,12 +102,7 @@ public class RemoveBookAdapter extends RecyclerView.Adapter<RemoveBookAdapter.Re
 
         holder.mBookPriceTV.setText(tempPrice);
         holder.mBookCollectionTV.setText(b.bookCollection);
-        holder.mDeleteBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openDeleteConfirmDialog(b.bookId, position, holder);
-            }
-        });
+        holder.mDeleteBtn.setOnClickListener(view -> openDeleteConfirmDialog(b.bookId, position, holder));
     }
 
     @Override
@@ -163,56 +137,32 @@ public class RemoveBookAdapter extends RecyclerView.Adapter<RemoveBookAdapter.Re
         mDialog.show();
 
         //if click no, cancel & display toast message
-        dialogNoBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Toast.makeText(context, "Book deletion is cancelled!", Toast.LENGTH_SHORT).show();
-                mDialog.dismiss();
-            }
+        dialogNoBtn.setOnClickListener(view -> {
+            Toast.makeText(context, "Book deletion is cancelled!", Toast.LENGTH_SHORT).show();
+            mDialog.dismiss();
         });
 
         //if click yes, delete & display toast message
-        dialogYesBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        dialogYesBtn.setOnClickListener(view -> {
 
-                db.collection("books")
-                        .document(id)
-                        .delete()
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
+            db.collection("books")
+                    .document(id)
+                    .delete()
+                    .addOnSuccessListener(unused -> {
 
-                                mStorageReference = FirebaseStorage.getInstance().getReference("images/IMG_" + id);
-                                mStorageReference.delete()
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                Log.d("DELETE_SUCCESS", "Deleting book image successful: " + id);
-                                            }
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.d("DELETE_FAIL", "Deleting book image failed: " + id);
-                                            }
-                                        });
+                        mStorageReference = FirebaseStorage.getInstance().getReference("images/IMG_" + id);
+                        mStorageReference.delete()
+                                .addOnCompleteListener(task -> Log.d("DELETE_SUCCESS", "Deleting book image successful: " + id)).addOnFailureListener(e -> Log.d("DELETE_FAIL", "Deleting book image failed: " + id));
 
-                                Intent i = new Intent(context, RemoveBook.class);
-                                ((Activity) context).finish();
-                                ((Activity) context).overridePendingTransition(0, 0);
-                                context.startActivity(i);
-                                ((Activity) context).overridePendingTransition(0, 0);
+                        Intent i = new Intent(context, RemoveBook.class);
+                        ((Activity) context).finish();
+                        ((Activity) context).overridePendingTransition(0, 0);
+                        context.startActivity(i);
+                        ((Activity) context).overridePendingTransition(0, 0);
 
-                                Toast.makeText(context, "Book successfully deleted.", Toast.LENGTH_SHORT).show();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(context, "Some error has occurred, deletion failed.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                mDialog.dismiss();
-            }
+                        Toast.makeText(context, "Book successfully deleted.", Toast.LENGTH_SHORT).show();
+                    }).addOnFailureListener(e -> Toast.makeText(context, "Some error has occurred, deletion failed.", Toast.LENGTH_SHORT).show());
+            mDialog.dismiss();
         });
 
     }

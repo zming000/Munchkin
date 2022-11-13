@@ -1,13 +1,9 @@
 package com.example.munchkin;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,25 +48,19 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.CartIt
         holder.mBookTitle.setText(mCartItem.getBookTitle());
         holder.mBookPrice.setText(mCartItem.getBookPrice());
 
-        holder.mAddButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        holder.mAddButton.setOnClickListener(view -> {
 
-                //if clicked, increase book quantity
+            //if clicked, increase book quantity
 
-                //check stock?
+            //check stock?
 
-            }
         });
 
-        holder.mMinusButton.setOnClickListener((new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        holder.mMinusButton.setOnClickListener((view -> {
 
-                //if clicked, decrease book quantity
+            //if clicked, decrease book quantity
 
-                //check if decrease until 0 (limit is 1 book left in cart)
-            }
+            //check if decrease until 0 (limit is 1 book left in cart)
         }));
 
         holder.mQuantity.setText(mCartItem.getQuantity());
@@ -86,7 +76,7 @@ public class CartItemAdapter extends RecyclerView.Adapter<CartItemAdapter.CartIt
 
     public static class CartItemViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        private CartItem mCartItem;
+        CartItem mCartItem;
 
         //list item views
 

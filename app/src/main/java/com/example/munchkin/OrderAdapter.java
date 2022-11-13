@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder> {
 
-    private Context context;
-    private ArrayList<Order> ordersList;
+    Context context;
+    ArrayList<Order> ordersList;
 
     public OrderAdapter(Context context, ArrayList<Order> ordersList)
     {
@@ -27,15 +27,10 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
         this.ordersList = ordersList;
     }
 
-    public class OrderHolder extends RecyclerView.ViewHolder
+    public static class OrderHolder extends RecyclerView.ViewHolder
     {
-        private TextView orderNoTV;
-        private TextView statusTV;
-        private TextView dateTV;
-        private TextView itemTotalTV;
-        private TextView priceTotalTV;
-        private TextView seeMoreBtn;
-        private ImageView seeMoreArrowBtn;
+        TextView orderNoTV, statusTV, dateTV, itemTotalTV, priceTotalTV, seeMoreBtn;
+        ImageView seeMoreArrowBtn;
 
         public OrderHolder(final View view)
         {
@@ -73,22 +68,16 @@ public class OrderAdapter extends RecyclerView.Adapter<OrderAdapter.OrderHolder>
         tempPrice = formatter.format(o.totalPrice);
         holder.priceTotalTV.setText("Price Total: RM" + tempPrice);
 
-        holder.seeMoreBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent (context, OrderDetails.class);
-                intent.putExtra("orderID", o.orderId);
-                context.startActivity(intent);
-            }
+        holder.seeMoreBtn.setOnClickListener(view -> {
+            Intent intent = new Intent (context, OrderDetails.class);
+            intent.putExtra("orderID", o.orderId);
+            context.startActivity(intent);
         });
 
-        holder.seeMoreArrowBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent (context, OrderDetails.class);
-                intent.putExtra("orderID", o.orderId);
-                context.startActivity(intent);
-            }
+        holder.seeMoreArrowBtn.setOnClickListener(view -> {
+            Intent intent = new Intent (context, OrderDetails.class);
+            intent.putExtra("orderID", o.orderId);
+            context.startActivity(intent);
         });
     }
 

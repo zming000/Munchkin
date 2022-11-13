@@ -11,12 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -30,23 +25,20 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class EditBookAdapter extends RecyclerView.Adapter<EditBookAdapter.EditBookHolder>{
 
-    private Context context;
-    private ArrayList<Book> bookList;
+    private final Context context;
+    private final ArrayList<Book> bookList;
 
-    private StorageReference mStorageReference;
+    StorageReference mStorageReference;
 
     public EditBookAdapter(Context context, ArrayList<Book> bookList) {
         this.context = context;
         this.bookList = bookList;
     }
 
-    public class EditBookHolder extends RecyclerView.ViewHolder {
-        private ImageView mBookImage;
-        private TextView mBookIdTV;
-        private TextView mBookTitleTV;
-        private TextView mBookPriceTV;
-        private TextView mBookCollectionTV;
-        private Button mEditBtn;
+    public static class EditBookHolder extends RecyclerView.ViewHolder {
+        ImageView mBookImage;
+        TextView mBookIdTV, mBookTitleTV, mBookPriceTV, mBookCollectionTV;
+        Button mEditBtn;
 
         public EditBookHolder(final View view) {
             super(view);
@@ -77,18 +69,10 @@ public class EditBookAdapter extends RecyclerView.Adapter<EditBookAdapter.EditBo
         {
             File localFile = File.createTempFile("tempFile", ".jpg");
             mStorageReference.getFile(localFile)
-                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                            holder.mBookImage.setImageBitmap(bitmap);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d("RETRIEVE_FAIL", "Retrieving book image failed: " + b.bookId);
-                        }
-                    });
+                    .addOnSuccessListener(taskSnapshot -> {
+                        Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                        holder.mBookImage.setImageBitmap(bitmap);
+                    }).addOnFailureListener(e -> Log.d("RETRIEVE_FAIL", "Retrieving book image failed: " + b.bookId));
 
         }
         catch (IOException e) {
@@ -103,13 +87,10 @@ public class EditBookAdapter extends RecyclerView.Adapter<EditBookAdapter.EditBo
 
         holder.mBookPriceTV.setText(tempPrice);
         holder.mBookCollectionTV.setText(b.bookCollection);
-        holder.mEditBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent (context, EditBook.class);
-                intent.putExtra("position", holder.getAdapterPosition());
-                context.startActivity(intent);
-            }
+        holder.mEditBtn.setOnClickListener(view -> {
+            Intent intent = new Intent (context, EditBook.class);
+            intent.putExtra("position", holder.getAdapterPosition());
+            context.startActivity(intent);
         });
     }
 

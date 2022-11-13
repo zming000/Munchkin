@@ -23,20 +23,11 @@
                 android:id="@+id/appLogo"
                 android:layout_width="153dp"
                 android:layout_height="157dp"
-                android:layout_marginTop="20dp"
-                android:layout_gravity="center" />
-
-            <TextView
-                android:id="@+id/appName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:layout_marginBottom="20dp"
                 android:layout_gravity="center"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="5dp"
-                android:text="Munchkin"
-                android:textColor="@color/primary"
-                android:textSize="31sp"
-                android:textStyle="bold" />
+                android:src="@drawable/munchkin_app_logo"/>
+
 
             <TextView
                 android:id="@+id/tvSignIn"

@@ -10,9 +10,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -26,23 +23,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class OrderBookAdapter extends RecyclerView.Adapter<OrderBookAdapter.OrderBookViewHolder>{
 
-    private Context context;
-    private ArrayList<OrderBook> obList;
+    Context context;
+    ArrayList<OrderBook> obList;
 
-    private StorageReference mStorageReference;
+    StorageReference mStorageReference;
 
     public OrderBookAdapter(Context context, ArrayList<OrderBook> obList) {
         this.context = context;
         this.obList = obList;
     }
 
-    public class OrderBookViewHolder extends RecyclerView.ViewHolder {
-        private ImageView mBookImg;
-        private TextView mBookIdTV;
-        private TextView mBookTitleTV;
-        private TextView mPriceTV;
-        private TextView mCollectionTV;
-        private TextView mTotalTV;
+    public static class OrderBookViewHolder extends RecyclerView.ViewHolder {
+        ImageView mBookImg;
+        TextView mBookIdTV, mBookTitleTV, mPriceTV, mCollectionTV, mTotalTV;
 
         public OrderBookViewHolder(final View view) {
             super(view);
@@ -73,18 +66,10 @@ public class OrderBookAdapter extends RecyclerView.Adapter<OrderBookAdapter.Orde
         {
             File localFile = File.createTempFile("tempFile", ".jpg");
             mStorageReference.getFile(localFile)
-                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
-                            holder.mBookImg.setImageBitmap(bitmap);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d("RETRIEVE_FAIL", "Retrieving book image failed: " + ob.mBook.getBookId());
-                        }
-                    });
+                    .addOnSuccessListener(taskSnapshot -> {
+                        Bitmap bitmap = BitmapFactory.decodeFile(localFile.getAbsolutePath());
+                        holder.mBookImg.setImageBitmap(bitmap);
+                    }).addOnFailureListener(e -> Log.d("RETRIEVE_FAIL", "Retrieving book image failed: " + ob.mBook.getBookId()));
 
         }
         catch (IOException e) {
