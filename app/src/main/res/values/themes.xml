@@ -12,4 +12,8 @@
         <item name="android:windowEnterAnimation">@anim/slide_scale_in</item>
         <item name="android:windowExitAnimation">@anim/slide_scale_out</item>
     </style>
+
+    <style name="dialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/popout_border</item>
+    </style>
 </resources>

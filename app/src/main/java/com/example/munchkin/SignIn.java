@@ -50,13 +50,12 @@ public class SignIn extends AppCompatActivity {
         String uName = spMunchkin.getString(KEY_USERNAME, null);
 
         //check if user signed in or not
-        if(uName.equals("adminTest01")){
-            startActivity(new Intent(SignIn.this, AdminMainActivity.class));
-            finishAffinity();
-            finish();
-        }
-        else if(uName != null){
-            startActivity(new Intent(SignIn.this, MainActivity.class));
+        if(uName != null){
+            if(uName.equals("adminTest01")){
+                startActivity(new Intent(SignIn.this, AdminMainActivity.class));
+            }else{
+                startActivity(new Intent(SignIn.this, MainActivity.class));
+            }
             finishAffinity();
             finish();
         }

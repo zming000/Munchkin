@@ -16,8 +16,8 @@ import java.util.Objects;
 public class BookList extends AppCompatActivity {
     //declare variable
     RecyclerView mrvBook;
-    ArrayList<com.example.nav.ModelBookList> bookList;
-    com.example.nav.AdapterBookList bookAdapter;
+    ArrayList<ModelBookList> bookList;
+    AdapterBookList bookAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,7 +31,7 @@ public class BookList extends AppCompatActivity {
         bookList = new ArrayList<>();
 
         //initialize adapter
-        bookAdapter = new com.example.nav.AdapterBookList(this, bookList);
+        bookAdapter = new AdapterBookList(this, bookList);
         mrvBook.setAdapter(bookAdapter);
 
         getBookDetailsFromFirestore();
@@ -55,7 +55,7 @@ public class BookList extends AppCompatActivity {
                     //use the id to check if the driver available within the duration requested
                     for(DocumentChange dc : Objects.requireNonNull(value).getDocumentChanges()){
                         if(dc.getType() == DocumentChange.Type.ADDED || dc.getType() == DocumentChange.Type.MODIFIED) {
-                            bookList.add(dc.getDocument().toObject(com.example.nav.ModelBookList.class));
+                            bookList.add(dc.getDocument().toObject(ModelBookList.class));
                         }
                     }
 

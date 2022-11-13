@@ -58,8 +58,7 @@ public class BookDetail extends AppCompatActivity {
         //initialize shared preference
         spMunchkin = getSharedPreferences(SP_NAME, MODE_PRIVATE);
         //get username from shared preference
-        String uName = "tester1";
-        //spMunchkin.getString(KEY_USERNAME, null);
+        String uName = spMunchkin.getString(KEY_USERNAME, null);
 
         StorageReference mStorageReference = FirebaseStorage.getInstance().getReference("images/IMG_" + id);
 
@@ -106,7 +105,7 @@ public class BookDetail extends AppCompatActivity {
 
             //show pop out dialog
             qtyDialog.show();
-            qtyDialog.getWindow().setLayout(450, 520);
+            qtyDialog.getWindow().setLayout(450, 670);
 
             mbtnOK.setOnClickListener(view1 -> {
                 qty = mnpPicker.getValue();
@@ -128,14 +127,16 @@ public class BookDetail extends AppCompatActivity {
                 Map<String,Object> order = new HashMap<>();
                 order.put("bookId", id);
                 order.put("price", price);
-                order.put("quantity", qty);
+                order.put("title", name);
+                order.put("quantity", String.valueOf(qty));
+                order.put("status", "Unpaid");
 
                 addCart.collection("Account Details").document(uName).collection("Shopping Cart").document(id)
                         .set(order)
                         .addOnSuccessListener(unused -> {
                             Toast.makeText(BookDetail.this, "Added to your shopping cart!", Toast.LENGTH_SHORT).show();
 
-                            startActivity(new Intent(BookDetail.this, com.example.nav.MainActivity.class));
+                            startActivity(new Intent(BookDetail.this, MainActivity.class));
                             finishAffinity();
                             finish();
                         })

@@ -1,8 +1,11 @@
 package com.example.munchkin;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -16,6 +19,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ImageView mivCart = findViewById(R.id.ivCart);
         CardView pictureBook = findViewById(R.id.PictureBooks);
         CardView activityBook = findViewById(R.id.ActivityBooks);
         CardView easyReader = findViewById(R.id.EasyReader);
@@ -24,10 +28,14 @@ public class MainActivity extends AppCompatActivity {
         CardView educationalTextbooks = findViewById(R.id.EducationalTextbooks);
         CardView exerciseBooks = findViewById(R.id.ExerciseBooks);
 
+        mivCart.setOnClickListener(view -> {
+            startActivity(new Intent(MainActivity.this, ShoppingCartActivity.class));
+        });
+
         pictureBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, com.example.nav.BookList.class);
+                Intent intent = new Intent(MainActivity.this, BookList.class);
                 intent.putExtra("collection", "Picture Books");
                 startActivity(intent);
             }
@@ -36,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
         activityBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, com.example.nav.BookList.class);
+                Intent intent = new Intent(MainActivity.this, BookList.class);
                 intent.putExtra("collection", "Activity Books");
                 startActivity(intent);
             }
@@ -45,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         easyReader.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, com.example.nav.BookList.class);
+                Intent intent = new Intent(MainActivity.this, BookList.class);
                 intent.putExtra("collection", "Easy Reader");
                 startActivity(intent);
             }
@@ -54,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         fictionNovels.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, com.example.nav.BookList.class);
+                Intent intent = new Intent(MainActivity.this, BookList.class);
                 intent.putExtra("collection", "Fiction Novels");
                 startActivity(intent);
             }
@@ -63,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         nonFiction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, com.example.nav.BookList.class);
+                Intent intent = new Intent(MainActivity.this, BookList.class);
                 intent.putExtra("collection", "Non-fiction Books");
                 startActivity(intent);
             }
@@ -72,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         educationalTextbooks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, com.example.nav.BookList.class);
+                Intent intent = new Intent(MainActivity.this, BookList.class);
                 intent.putExtra("collection", "Educational Textbooks");
                 startActivity(intent);
             }
@@ -81,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
         exerciseBooks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, com.example.nav.BookList.class);
+                Intent intent = new Intent(MainActivity.this, BookList.class);
                 intent.putExtra("collection", "Exercise Books");
                 startActivity(intent);
             }

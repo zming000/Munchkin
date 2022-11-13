@@ -1,22 +1,43 @@
 package com.example.munchkin;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.animation.LayoutTransition;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CheckoutShippingActivity extends AppCompatActivity {
 
     RadioGroup mRadioGroup;
     Button mbtnContinueToPayment;
     TextView mshipTo_value, mreturnToInformation_textView, mchangeShipAddr_textView, mcontactEmail_value;
+    TextView showOrderSummaryTxt, mCheckoutPage2_orderTotalPrice_textView, msubtotal_value, mtotal_value, mtotal_qty;
     ImageView mCheckoutPage2_backImageView;
+    CartItemAdapter mAdapter;
+    ArrayList<CartItem> mCartItemArrayList;
+    RecyclerView mcartSummary_items_recycler_view;
+    ConstraintLayout mOrderSummary;
+    LinearLayout mOrderSummaryDropDown;
     String shippingMethod;
 
     @Override
@@ -31,6 +52,49 @@ public class CheckoutShippingActivity extends AppCompatActivity {
         mRadioGroup = findViewById(R.id.radioGroup);
         mCheckoutPage2_backImageView = findViewById(R.id.CheckoutPage2_backImageView);
         mbtnContinueToPayment = findViewById(R.id.btnContinueToPayment);
+
+        mtotal_qty = findViewById(R.id.total_qtyValue);
+        mtotal_value = findViewById(R.id.total_value);
+        msubtotal_value = findViewById(R.id.subtotal_value);
+        mCheckoutPage2_orderTotalPrice_textView = findViewById(R.id.CheckoutPage2_orderTotalPrice_textView);
+        mcartSummary_items_recycler_view = findViewById(R.id.cartSummary_items_recycler_view);
+
+        mOrderSummary = findViewById(R.id.orderSummary_constraintLayout2);
+        showOrderSummaryTxt = findViewById(R.id.CheckoutPage2_showOrderSummary_textView);
+        mOrderSummaryDropDown = findViewById(R.id.orderSummary_dropDown);
+
+        //get username from shared preference
+        String uName = getIntent().getStringExtra("username");
+
+        mcartSummary_items_recycler_view.setLayoutManager(new LinearLayoutManager(this));
+        mCartItemArrayList = new ArrayList<>();
+        mAdapter = new CartItemAdapter(this, mCartItemArrayList, uName);
+        mcartSummary_items_recycler_view.setAdapter(mAdapter);
+
+        getOrderDetailsFromFirestore(uName);
+
+        mOrderSummary.setOnClickListener(v -> {
+            mOrderSummaryDropDown.getLayoutTransition().enableTransitionType(LayoutTransition.APPEARING);
+
+            //determine visibility
+            int viLinearLayout = (mOrderSummaryDropDown.getVisibility() == View.GONE) ? View.VISIBLE : View.GONE;
+            mOrderSummaryDropDown.setVisibility(viLinearLayout);
+
+            ImageView imageView = findViewById(R.id.drop_down_for_more);
+
+            if(mOrderSummaryDropDown.getVisibility() == View.VISIBLE){
+                imageView.setImageResource(R.drawable.ic_arrow_up);
+                imageView.setTag(R.drawable.ic_arrow_up);
+                showOrderSummaryTxt.setText("Hide order summary");
+
+            }
+            else{
+                imageView.setImageResource(R.drawable.ic_arrow_down);
+                imageView.setTag(R.drawable.ic_arrow_down);
+                showOrderSummaryTxt.setText("Show order summary");
+            }
+
+        });
 
         mcontactEmail_value.setText(getIntent().getStringExtra("email"));
 
@@ -59,6 +123,7 @@ public class CheckoutShippingActivity extends AppCompatActivity {
                 intent.putExtra("phoneNumber", getIntent().getStringExtra("phoneNumber"));
                 intent.putExtra("shipping", shippingMethod);
                 intent.putExtra("email", getIntent().getStringExtra("email"));
+                intent.putExtra("username", uName);
 
                 startActivity(intent);
             }
@@ -70,5 +135,51 @@ public class CheckoutShippingActivity extends AppCompatActivity {
         mchangeShipAddr_textView.setOnClickListener(view -> finish());
         mCheckoutPage2_backImageView.setOnClickListener(view -> finish());
         mreturnToInformation_textView.setOnClickListener(view -> finish());
+    }
+
+    private void getOrderDetailsFromFirestore(String username) {
+        FirebaseFirestore cartDB = FirebaseFirestore.getInstance();
+        FirebaseFirestore getPrice = FirebaseFirestore.getInstance();
+        ArrayList<String> id = new ArrayList<>();
+
+        cartDB.collection("Account Details").document(username).collection("Shopping Cart")
+                .whereEqualTo("status", "Unpaid")
+                .addSnapshotListener((value, error) -> {
+                    if(error != null){
+                        Toast.makeText(CheckoutShippingActivity.this, "Error Loading Cart!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    //clear list
+                    mCartItemArrayList.clear();
+
+                    //use the id to check if the driver available within the duration requested
+                    for(DocumentChange dc : Objects.requireNonNull(value).getDocumentChanges()){
+                        if(dc.getType() == DocumentChange.Type.ADDED) {
+                            mCartItemArrayList.add(dc.getDocument().toObject(CartItem.class));
+                            id.add(dc.getDocument().getId());
+                        }
+                    }
+                    AtomicReference<Double> total = new AtomicReference<>(0.00);
+                    AtomicInteger qty = new AtomicInteger();
+                    for(int i = 0; i < id.size(); i++){
+
+                        getPrice.collection("Account Details").document(username)
+                                .collection("Shopping Cart").document(id.get(i)).get()
+                                .addOnCompleteListener(task -> {
+                                    if(task.isSuccessful()){
+                                        DocumentSnapshot doc = task.getResult();
+
+                                        total.updateAndGet(v -> new Double((double) (v + (Double.parseDouble(doc.getString("price")) * Double.parseDouble(doc.getString("quantity"))))));
+                                        qty.addAndGet(Integer.parseInt(doc.getString("quantity")));
+                                        mCheckoutPage2_orderTotalPrice_textView.setText("RM " + total);
+                                        msubtotal_value.setText("RM " + total);
+                                        mtotal_value.setText("RM " + total);
+                                        mtotal_qty.setText(String.valueOf(qty));
+                                    }
+                                });
+                    }
+                    mAdapter.notifyDataSetChanged();
+                });
     }
 }

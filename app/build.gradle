@@ -43,4 +43,6 @@ dependencies {
 
     //OTP Pin View
     implementation 'io.github.chaosleung:pinview:1.4.4'
+    //swipe refresh
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 }

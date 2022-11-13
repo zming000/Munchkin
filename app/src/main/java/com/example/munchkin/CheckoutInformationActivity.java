@@ -1,16 +1,15 @@
 package com.example.munchkin;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.animation.LayoutTransition;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.transition.AutoTransition;
-import android.transition.TransitionManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -18,42 +17,35 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CheckoutInformationActivity extends AppCompatActivity {
 
     //
-    // constant values
-    //
-    //key name
-    private static final String SP_NAME = "munchkinPref";
-    private static final String KEY_USERNAME = "username";
-
-    //
     // views
     //
+    CartItemAdapter mAdapter;
+    ArrayList<CartItem> mCartItemArrayList;
     ImageView mBackBtn;
-
+    RecyclerView mcartSummary_items_recycler_view;
     ConstraintLayout mOrderSummary;
-    TextView showOrderSummaryTxt, mUsernameText, mEmailText;
-    ImageView dropDownArrow;
     LinearLayout mOrderSummaryDropDown;
-    SharedPreferences spMunchkin;
-
-
+    TextView showOrderSummaryTxt, mUsernameText, mEmailText, mCheckoutPage1_orderTotalPrice_textView, msubtotal_value, mtotal_value, mtotal_qty;
     TextInputLayout mtilCountryRegion, mtilFirstName, mtilLastName, mtilAddress, mtilPostcode, mtilCity, mtilStateTerritory, mtilPhone;
     TextInputEditText mShippingCountry, mFirstName, mLastName, mCompany, mAddress, mApartment, mPostcode, mCity, mState, mPhone;
     Boolean statusShippingCountry, statusFirstName, statusLastName, statusAddress, statusPostcode, statusCity, statusState, statusPhone, statusVerification;
     Button mContinueToShipBtn;
 
     FirebaseFirestore getEmail;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,12 +55,16 @@ public class CheckoutInformationActivity extends AppCompatActivity {
         //
         // find views
         //
+        mtotal_qty = findViewById(R.id.total_qtyValue);
+        mtotal_value = findViewById(R.id.total_value);
+        msubtotal_value = findViewById(R.id.subtotal_value);
+        mCheckoutPage1_orderTotalPrice_textView = findViewById(R.id.CheckoutPage1_orderTotalPrice_textView);
+        mcartSummary_items_recycler_view = findViewById(R.id.cartSummary_items_recycler_view);
         mBackBtn = findViewById(R.id.CheckoutPage1_backImageView);
         mUsernameText = findViewById(R.id.checkoutPage_contactInfo_username);
         mEmailText = findViewById(R.id.checkoutPage_contactInfo_email);
         mOrderSummary = findViewById(R.id.orderSummary_constraintLayout1);
         showOrderSummaryTxt = findViewById(R.id.CheckoutPage1_showOrderSummary_textView);
-        dropDownArrow = findViewById(R.id.drop_down_for_more);
         mOrderSummaryDropDown = findViewById(R.id.orderSummary_dropDown);
         mContinueToShipBtn = findViewById(R.id.btnContinueToShipping);
         mtilCountryRegion = findViewById(R.id.tilCountryRegion);
@@ -92,11 +88,16 @@ public class CheckoutInformationActivity extends AppCompatActivity {
 
         //initialize firestore
         getEmail = FirebaseFirestore.getInstance();
-        //initialize shared preference
-        spMunchkin = getSharedPreferences(SP_NAME, MODE_PRIVATE);
+
         //get username from shared preference
-        String uName = "tester1";
-                //spMunchkin.getString(KEY_USERNAME, null);
+        String uName = getIntent().getStringExtra("username");
+
+        mcartSummary_items_recycler_view.setLayoutManager(new LinearLayoutManager(this));
+        mCartItemArrayList = new ArrayList<>();
+        mAdapter = new CartItemAdapter(this, mCartItemArrayList, uName);
+        mcartSummary_items_recycler_view.setAdapter(mAdapter);
+
+        getOrderDetailsFromFirestore(uName);
 
         mUsernameText.setText(uName);
         getEmail.collection("Account Details").document(uName).get()
@@ -108,57 +109,31 @@ public class CheckoutInformationActivity extends AppCompatActivity {
                     }
                 });
 
-
-
-        //
-        //initialization of values...
-        //
-//        mOrderSummary.getLayoutTransition().enableTransitionType(LayoutTransition.CHANGING);
-
-        // initialize order summary values from database for constraint layout and linear layout
-        // initialize contact info
-
-        //
-        // listeners
-        //
         mBackBtn.setOnClickListener(v -> {
             //go back to shopping cart activity
             finish();
         });
 
         mOrderSummary.setOnClickListener(v -> {
-
-            //depending on situation...
-
-            //0- change title
-            showOrderSummaryTxt.setText("Hide order summary");
-
-            //1- change arrow image
-            ImageView imageView = (ImageView) v;
-            assert (R.id.drop_down_for_more == imageView.getId());
-
-            Integer integer = (Integer) imageView.getTag();
-            integer = integer == null ? 0 : integer;
-
-            switch (integer) {
-
-                case R.drawable.ic_arrow_down:
-                    imageView.setImageResource(R.drawable.ic_arrow_up);
-                    imageView.setTag(R.drawable.ic_arrow_up);
-                    break;
-                case R.drawable.ic_arrow_up:
-                    imageView.setImageResource(R.drawable.ic_arrow_down);
-                    imageView.setTag(R.drawable.ic_arrow_down);
-                    break;
-
-            }
-
-            //2- make order summary drop down visible / gone
-            TransitionManager.beginDelayedTransition(mOrderSummaryDropDown, new AutoTransition());
+            mOrderSummaryDropDown.getLayoutTransition().enableTransitionType(LayoutTransition.APPEARING);
 
             //determine visibility
             int viLinearLayout = (mOrderSummaryDropDown.getVisibility() == View.GONE) ? View.VISIBLE : View.GONE;
             mOrderSummaryDropDown.setVisibility(viLinearLayout);
+
+            ImageView imageView = findViewById(R.id.drop_down_for_more);
+
+            if(mOrderSummaryDropDown.getVisibility() == View.VISIBLE){
+                imageView.setImageResource(R.drawable.ic_arrow_up);
+                imageView.setTag(R.drawable.ic_arrow_up);
+                showOrderSummaryTxt.setText("Hide order summary");
+
+            }
+            else{
+                imageView.setImageResource(R.drawable.ic_arrow_down);
+                imageView.setTag(R.drawable.ic_arrow_down);
+                showOrderSummaryTxt.setText("Show order summary");
+            }
 
         });
 
@@ -184,6 +159,7 @@ public class CheckoutInformationActivity extends AppCompatActivity {
                     intent.putExtra("state", mState.getText().toString());
                     intent.putExtra("phoneNumber", "+60" + mPhone.getText().toString());
                     intent.putExtra("email", mEmailText.getText().toString());
+                    intent.putExtra("username", uName);
 
                     startActivity(intent);
                 }
@@ -192,6 +168,52 @@ public class CheckoutInformationActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void getOrderDetailsFromFirestore(String username) {
+        FirebaseFirestore cartDB = FirebaseFirestore.getInstance();
+        FirebaseFirestore getPrice = FirebaseFirestore.getInstance();
+        ArrayList<String> id = new ArrayList<>();
+
+        cartDB.collection("Account Details").document(username).collection("Shopping Cart")
+                .whereEqualTo("status", "Unpaid")
+                .addSnapshotListener((value, error) -> {
+                    if(error != null){
+                        Toast.makeText(CheckoutInformationActivity.this, "Error Loading Cart!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    //clear list
+                    mCartItemArrayList.clear();
+
+                    //use the id to check if the driver available within the duration requested
+                    for(DocumentChange dc : Objects.requireNonNull(value).getDocumentChanges()){
+                        if(dc.getType() == DocumentChange.Type.ADDED) {
+                            mCartItemArrayList.add(dc.getDocument().toObject(CartItem.class));
+                            id.add(dc.getDocument().getId());
+                        }
+                    }
+                    AtomicReference<Double> total = new AtomicReference<>(0.00);
+                    AtomicInteger qty = new AtomicInteger();
+                    for(int i = 0; i < id.size(); i++){
+
+                        getPrice.collection("Account Details").document(username)
+                                .collection("Shopping Cart").document(id.get(i)).get()
+                                .addOnCompleteListener(task -> {
+                                   if(task.isSuccessful()){
+                                       DocumentSnapshot doc = task.getResult();
+
+                                       total.updateAndGet(v -> new Double((double) (v + (Double.parseDouble(doc.getString("price")) * Double.parseDouble(doc.getString("quantity"))))));
+                                       qty.addAndGet(Integer.parseInt(doc.getString("quantity")));
+                                       mCheckoutPage1_orderTotalPrice_textView.setText("RM " + total);
+                                       msubtotal_value.setText("RM " + total);
+                                       mtotal_value.setText("RM " + total);
+                                       mtotal_qty.setText(String.valueOf(qty));
+                                   }
+                                });
+                    }
+                    mAdapter.notifyDataSetChanged();
+                });
     }
 
     //Validations on each field to ensure correct input

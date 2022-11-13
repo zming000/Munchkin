@@ -2,76 +2,48 @@ package com.example.munchkin;
 
 public class CartItem {
 
-    private String cartItemID;
-    private int quantity;
-
-    private String bookID;
-    private String bookTitle;
-    private String bookPrice;
-    private int imageID;
+    String quantity, bookId, title, price;
 
     public CartItem(){
 
     }
 
-    public CartItem(String cartItemID, String bookID, String bookTitle, String bookPrice, int imageID, int quantity){
-
-        this.cartItemID = cartItemID;
-        this.bookID = bookID;
-
-        this.bookTitle = bookTitle;
-        this.bookPrice = bookPrice;
-        this.imageID = imageID;
-
+    public CartItem(String quantity, String bookId, String title, String price) {
         this.quantity = quantity;
-
+        this.bookId = bookId;
+        this.title = title;
+        this.price = price;
     }
 
-    public String getCartItemID() {
-        return cartItemID;
-    }
-
-    public void setCartItemID(String cartItemID) {
-        this.cartItemID = cartItemID;
-    }
-
-    public String getBookID() {
-        return bookID;
-    }
-
-    public void setBookID(String bookID) {
-        this.bookID = bookID;
-    }
-
-    public String getBookTitle() {
-        return bookTitle;
-    }
-
-    public void setBookTitle(String bookTitle) {
-        this.bookTitle = bookTitle;
-    }
-
-    public String getBookPrice() {
-        return bookPrice;
-    }
-
-    public void setBookPrice(String bookPrice) {
-        this.bookPrice = bookPrice;
-    }
-
-    public int getImageID() {
-        return imageID;
-    }
-
-    public void setImageID(int imageID) {
-        this.imageID = imageID;
-    }
-
-    public int getQuantity() {
+    public String getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(String quantity) {
         this.quantity = quantity;
+    }
+
+    public String getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getPrice() {
+        return price;
+    }
+
+    public void setPrice(String price) {
+        this.price = price;
     }
 }

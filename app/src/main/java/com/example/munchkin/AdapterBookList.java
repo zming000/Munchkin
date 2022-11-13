@@ -28,9 +28,9 @@ import java.util.ArrayList;
 public class AdapterBookList extends RecyclerView.Adapter<AdapterBookList.BookListViewHolder> {
     //declare variables
     Context bookContext;
-    ArrayList<com.example.nav.ModelBookList> bookArrayList;
+    ArrayList<ModelBookList> bookArrayList;
 
-    public AdapterBookList(Context bookContext, ArrayList<com.example.nav.ModelBookList> bookArrayList) {
+    public AdapterBookList(Context bookContext, ArrayList<ModelBookList> bookArrayList) {
         this.bookContext = bookContext;
         this.bookArrayList = bookArrayList;
     }
@@ -46,7 +46,7 @@ public class AdapterBookList extends RecyclerView.Adapter<AdapterBookList.BookLi
     @Override
     public void onBindViewHolder(@NonNull BookListViewHolder holder, int position) {
         //get position
-        com.example.nav.ModelBookList mbl = bookArrayList.get(position);
+        ModelBookList mbl = bookArrayList.get(position);
 
         StorageReference mStorageReference = FirebaseStorage.getInstance().getReference("images/IMG_" + mbl.bookID);
 
