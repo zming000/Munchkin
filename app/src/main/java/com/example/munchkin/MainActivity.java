@@ -1,48 +1,105 @@
 package com.example.munchkin;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.widget.Button;
+import android.view.View;
 
-import com.google.firebase.firestore.FirebaseFirestore;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainActivity extends AppCompatActivity {
-    Button mbtnLogout;
-    SharedPreferences spMunchkin;
-
-    //key name
-    private static final String SP_NAME = "munchkinPref";
-    private static final String KEY_USERNAME = "username";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mbtnLogout = findViewById(R.id.btnLogout);
+        CardView pictureBook = findViewById(R.id.PictureBooks);
+        CardView activityBook = findViewById(R.id.ActivityBooks);
+        CardView easyReader = findViewById(R.id.EasyReader);
+        CardView fictionNovels = findViewById(R.id.FictionNovels);
+        CardView nonFiction = findViewById(R.id.NonFiction);
+        CardView educationalTextbooks = findViewById(R.id.EducationalTextbooks);
+        CardView exerciseBooks = findViewById(R.id.ExerciseBooks);
 
-        mbtnLogout.setOnClickListener(view -> {
-            //logout
-            spMunchkin = getSharedPreferences(SP_NAME, MODE_PRIVATE);
-            String id = spMunchkin.getString(KEY_USERNAME, null);
-            spMunchkin.edit().clear().apply();
+        pictureBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, com.example.nav.BookList.class);
+                intent.putExtra("collection", "Picture Books");
+                startActivity(intent);
+            }
+        });
 
-            FirebaseFirestore updateStatus = FirebaseFirestore.getInstance();
-            Map<String,Object> logout = new HashMap<>();
-            logout.put("accountStatus", "Offline");
+        activityBook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, com.example.nav.BookList.class);
+                intent.putExtra("collection", "Activity Books");
+                startActivity(intent);
+            }
+        });
 
-            updateStatus.collection("Account Details").document(id)
-                    .update(logout);
+        easyReader.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, com.example.nav.BookList.class);
+                intent.putExtra("collection", "Easy Reader");
+                startActivity(intent);
+            }
+        });
 
-            startActivity(new Intent(MainActivity.this, SignIn.class));
-            finishAffinity();
-            finish();
+        fictionNovels.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, com.example.nav.BookList.class);
+                intent.putExtra("collection", "Fiction Novels");
+                startActivity(intent);
+            }
+        });
+
+        nonFiction.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, com.example.nav.BookList.class);
+                intent.putExtra("collection", "Non-fiction Books");
+                startActivity(intent);
+            }
+        });
+
+        educationalTextbooks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, com.example.nav.BookList.class);
+                intent.putExtra("collection", "Educational Textbooks");
+                startActivity(intent);
+            }
+        });
+
+        exerciseBooks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, com.example.nav.BookList.class);
+                intent.putExtra("collection", "Exercise Books");
+                startActivity(intent);
+            }
+        });
+
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.home);
+        bottomNavigationView.setOnItemSelectedListener(item -> {
+            switch (item.getItemId()){
+                case R.id.account:
+                    startActivity(new Intent(getApplicationContext(), Account.class));
+                    overridePendingTransition(0,0);
+                    finish();
+                    return true;
+                case R.id.home:
+                    return true;
+            }
+            return false;
         });
     }
 }
