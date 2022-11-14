@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:animateLayoutChanges="true"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/cartSummary_items_recycler_view"
