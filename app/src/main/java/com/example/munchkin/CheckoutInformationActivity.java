@@ -402,7 +402,7 @@ public class CheckoutInformationActivity extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 //check input conditions (no whitespace, with letters, with digit, no uppercase)
                 if(mState.getText().toString().isEmpty()){
-                    mtilStateTerritory.setError("Please enter your city!");
+                    mtilStateTerritory.setError("Please enter your state!");
                 }
                 else if(digitExist(mState.getText().toString())){
                     mtilStateTerritory.setError("State should not contain numerics!");

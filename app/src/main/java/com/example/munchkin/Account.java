@@ -63,7 +63,6 @@ public class Account extends AppCompatActivity {
 
         mbtnLogout.setOnClickListener(view -> {
             //logout
-
             spMunchkin.edit().clear().apply();
 
             FirebaseFirestore updateStatus = FirebaseFirestore.getInstance();
