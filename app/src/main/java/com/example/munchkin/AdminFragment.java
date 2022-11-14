@@ -1,6 +1,7 @@
 package com.example.munchkin;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.cardview.widget.CardView;
@@ -11,10 +12,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static android.content.Context.MODE_PRIVATE;
+
 public class AdminFragment extends Fragment {
 
     ImageView mBackBtn;
     CardView mAddBookBtn, mEditBookBtn, mRemoveBookBtn;
+    SharedPreferences spMunchkin;
+
+    private static final String SP_NAME = "munchkinPref";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,8 +44,19 @@ public class AdminFragment extends Fragment {
         mEditBookBtn = view.findViewById(R.id.AdminFragment_editBookCard);
         mRemoveBookBtn = view.findViewById(R.id.AdminFragment_removeBookCard);
 
+        spMunchkin = getActivity().getSharedPreferences(SP_NAME, MODE_PRIVATE);
 
-        mBackBtn.setOnClickListener(view1 -> getActivity().finish());
+        mBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //logout
+                spMunchkin.edit().clear().apply();
+
+                startActivity(new Intent(getActivity(), SignIn.class));
+                getActivity().finishAffinity();
+                getActivity().finish();
+            }
+        });
 
         mAddBookBtn.setOnClickListener(view12 -> openAddBookActivity());
 

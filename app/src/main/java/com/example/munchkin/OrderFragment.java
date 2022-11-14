@@ -1,6 +1,8 @@
 package com.example.munchkin;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -19,6 +21,8 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.ArrayList;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 public class OrderFragment extends Fragment {
 
@@ -31,6 +35,11 @@ public class OrderFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private ProgressDialog mProgressDialog;
     FirebaseFirestore db;
+
+    SharedPreferences spMunchkin;
+
+    private static final String SP_NAME = "munchkinPref";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +62,8 @@ public class OrderFragment extends Fragment {
         mRecyclerView = view.findViewById(R.id.orderPage_recyclerView);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        spMunchkin = getActivity().getSharedPreferences(SP_NAME, MODE_PRIVATE);
 
         db = FirebaseFirestore.getInstance();
 
@@ -143,7 +154,17 @@ public class OrderFragment extends Fragment {
                     }
                 });
 
-        mBackBtn.setOnClickListener(view1 -> getActivity().finish());
+        mBackBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //logout
+                spMunchkin.edit().clear().apply();
+
+                startActivity(new Intent(getActivity(), SignIn.class));
+                getActivity().finishAffinity();
+                getActivity().finish();
+            }
+        });
 
         return view;
     }
