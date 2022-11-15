@@ -177,6 +177,7 @@ public class CheckoutInformationActivity extends AppCompatActivity {
                     intent.putExtra("phoneNumber", mPhone.getText().toString());
                     intent.putExtra("email", mEmailText.getText().toString());
                     intent.putExtra("username", uName);
+                    intent.putExtra("shipping", getIntent().getStringExtra("shipping"));
 
                     startActivity(intent);
                     finishAffinity();

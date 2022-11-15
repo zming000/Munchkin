@@ -65,6 +65,16 @@ public class CheckoutShippingActivity extends AppCompatActivity {
 
         //get username from shared preference
         uName = getIntent().getStringExtra("username");
+        String shipping = getIntent().getStringExtra("shipping");
+
+        if(shipping != null) {
+            if (shipping.equals("Pos Laju (RM 6)")) {
+                mRadioGroup.check(R.id.pos_laju_RB);
+            }
+            else{
+                mRadioGroup.check(R.id.dhl_RB);
+            }
+        }
 
         mcartSummary_items_recycler_view.setLayoutManager(new LinearLayoutManager(this));
         mCartItemArrayList = new ArrayList<>();

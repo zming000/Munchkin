@@ -46,7 +46,7 @@ public class CheckoutPaymentActivity extends AppCompatActivity {
     RecyclerView mcartSummary_items_recycler_view;
     ConstraintLayout mOrderSummary;
     LinearLayout mOrderSummaryDropDown;
-    String method;
+    String method, uName;
     String[] bookIDs, bookCollections, bookTitles, bookPrices, bookQuantity;
 
     @Override
@@ -78,7 +78,7 @@ public class CheckoutPaymentActivity extends AppCompatActivity {
 
 
         //get username from shared preference
-        String uName = getIntent().getStringExtra("username");
+        uName = getIntent().getStringExtra("username");
         method = getIntent().getStringExtra("shipping");
 
         mcartSummary_items_recycler_view.setLayoutManager(new LinearLayoutManager(this));
@@ -123,8 +123,10 @@ public class CheckoutPaymentActivity extends AppCompatActivity {
             intent.putExtra("city", getIntent().getStringExtra("city"));
             intent.putExtra("state", getIntent().getStringExtra("state"));
             intent.putExtra("phoneNumber", getIntent().getStringExtra("phoneNumber"));
+            intent.putExtra("shipping", method);
             intent.putExtra("email", getIntent().getStringExtra("email"));
             intent.putExtra("username", uName);
+
             startActivity(intent);
             finishAffinity();
             finish();
@@ -287,5 +289,26 @@ public class CheckoutPaymentActivity extends AppCompatActivity {
 
                     mAdapter.notifyDataSetChanged();
                 });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(CheckoutPaymentActivity.this, CheckoutShippingActivity.class);
+        intent.putExtra("country", getIntent().getStringExtra("country"));
+        intent.putExtra("firstName", getIntent().getStringExtra("firstName"));
+        intent.putExtra("lastName", getIntent().getStringExtra("lastName"));
+        intent.putExtra("company", getIntent().getStringExtra("company"));
+        intent.putExtra("address", getIntent().getStringExtra("address"));
+        intent.putExtra("apartment", getIntent().getStringExtra("apartment"));
+        intent.putExtra("postcode", getIntent().getStringExtra("postcode"));
+        intent.putExtra("city", getIntent().getStringExtra("city"));
+        intent.putExtra("state", getIntent().getStringExtra("state"));
+        intent.putExtra("phoneNumber", getIntent().getStringExtra("phoneNumber"));
+        intent.putExtra("shipping", method);
+        intent.putExtra("email", getIntent().getStringExtra("email"));
+        intent.putExtra("username", uName);
+
+        startActivity(intent);
+        finish();
     }
 }
