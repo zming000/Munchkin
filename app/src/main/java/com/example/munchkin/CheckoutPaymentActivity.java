@@ -111,7 +111,24 @@ public class CheckoutPaymentActivity extends AppCompatActivity {
 
         });
 
-        mchangeShipAddr_textView.setOnClickListener(view -> finish());
+        mchangeShipAddr_textView.setOnClickListener(view -> {
+            Intent intent = new Intent(CheckoutPaymentActivity.this, CheckoutInformationActivity.class);
+            intent.putExtra("country", getIntent().getStringExtra("country"));
+            intent.putExtra("firstName", getIntent().getStringExtra("firstName"));
+            intent.putExtra("lastName", getIntent().getStringExtra("lastName"));
+            intent.putExtra("company", getIntent().getStringExtra("company"));
+            intent.putExtra("address", getIntent().getStringExtra("address"));
+            intent.putExtra("apartment", getIntent().getStringExtra("apartment"));
+            intent.putExtra("postcode", getIntent().getStringExtra("postcode"));
+            intent.putExtra("city", getIntent().getStringExtra("city"));
+            intent.putExtra("state", getIntent().getStringExtra("state"));
+            intent.putExtra("phoneNumber", getIntent().getStringExtra("phoneNumber"));
+            intent.putExtra("email", getIntent().getStringExtra("email"));
+            intent.putExtra("username", uName);
+            startActivity(intent);
+            finishAffinity();
+            finish();
+        });
 
         mreturnToShipping_textView.setOnClickListener(view -> finish());
 
