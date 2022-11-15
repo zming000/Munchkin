@@ -92,4 +92,22 @@ public class Account extends AppCompatActivity {
             return false;
         });
     }
+
+    //quit application
+    @Override
+    public void onBackPressed() {
+        android.app.AlertDialog.Builder alertDialogBuilder = new android.app.AlertDialog.Builder(this);
+        alertDialogBuilder.setTitle("Leaving Munchkin?");
+        alertDialogBuilder
+                .setMessage("Click yes to exit!")
+                .setCancelable(false)
+                .setPositiveButton("Yes", (dialog, id) -> {
+                    finishAffinity();
+                    finish();
+                })
+                .setNegativeButton("No", (dialog, id) -> dialog.cancel());
+
+        android.app.AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
 }
