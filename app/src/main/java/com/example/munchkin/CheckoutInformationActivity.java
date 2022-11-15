@@ -154,12 +154,12 @@ public class CheckoutInformationActivity extends AppCompatActivity {
 
         });
 
+        //change error messages
+        errorChangeOnEachFields();
+
         mContinueToShipBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //change error messages
-                errorChangeOnEachFields();
-
                 //validate each field
                 statusVerification = validationOnEachFields();
                 if(statusVerification) {
@@ -360,7 +360,7 @@ public class CheckoutInformationActivity extends AppCompatActivity {
                 if(mPostcode.getText().toString().isEmpty()){
                     mtilPostcode.setError("Please enter your postcode!");
                 }
-                else if(!digitExist(mLastName.getText().toString())){
+                else if(!digitExist(mPostcode.getText().toString())){
                     mtilPostcode.setError("Postcode should contain numerics only!");
                 }
                 else if(mPostcode.getText().toString().matches(".*[a-zA-Z]+.*")){

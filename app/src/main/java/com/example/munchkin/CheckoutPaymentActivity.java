@@ -281,7 +281,6 @@ public class CheckoutPaymentActivity extends AppCompatActivity {
                                 });
 
                         mCheckoutPage3_orderTotalPrice_textView.setText("RM " + total + "0");
-                        msubtotal_value.setText("RM " + total + "0");
                         mtotal_value.setText("RM " + total + "0");
                         mtotal_qty.setText(String.valueOf(qty));
                     }

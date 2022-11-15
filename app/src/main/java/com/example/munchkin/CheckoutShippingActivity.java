@@ -38,7 +38,7 @@ public class CheckoutShippingActivity extends AppCompatActivity {
     RecyclerView mcartSummary_items_recycler_view;
     ConstraintLayout mOrderSummary;
     LinearLayout mOrderSummaryDropDown;
-    String shippingMethod;
+    String shippingMethod, uName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class CheckoutShippingActivity extends AppCompatActivity {
         mOrderSummaryDropDown = findViewById(R.id.orderSummary_dropDown);
 
         //get username from shared preference
-        String uName = getIntent().getStringExtra("username");
+        uName = getIntent().getStringExtra("username");
 
         mcartSummary_items_recycler_view.setLayoutManager(new LinearLayoutManager(this));
         mCartItemArrayList = new ArrayList<>();
@@ -240,6 +240,7 @@ public class CheckoutShippingActivity extends AppCompatActivity {
         intent.putExtra("phoneNumber", getIntent().getStringExtra("phoneNumber"));
         intent.putExtra("shipping", shippingMethod);
         intent.putExtra("email", getIntent().getStringExtra("email"));
+        intent.putExtra("username", uName);
 
         startActivity(intent);
         finish();
