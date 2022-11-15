@@ -22,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Objects;
 
+
 public class ShoppingCartActivity extends AppCompatActivity {
 
     CartItemAdapter mAdapter;
@@ -36,7 +37,7 @@ public class ShoppingCartActivity extends AppCompatActivity {
     String uName;
 
     //key name
-    private static final String SP_NAME = "drivmePref";
+    private static final String SP_NAME = "munchkinPref";
     private static final String KEY_USERNAME = "username";
 
     @Override
@@ -52,11 +53,15 @@ public class ShoppingCartActivity extends AppCompatActivity {
         mCartItemRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         spMunchkin = getSharedPreferences(SP_NAME, MODE_PRIVATE);
-        uName = "tester1";
-                //spMunchkin.getString(KEY_USERNAME, null);
+        uName = spMunchkin.getString(KEY_USERNAME, null);
 
         //listeners...
-        mImgViewBack.setOnClickListener(v -> finish());
+        mImgViewBack.setOnClickListener(v -> {
+            Intent intent = new Intent(ShoppingCartActivity.this, MainActivity.class);
+
+            startActivity(intent);
+            finish();
+        });
 
         //initialize variables
         cartDB = FirebaseFirestore.getInstance();
@@ -113,5 +118,13 @@ public class ShoppingCartActivity extends AppCompatActivity {
 
                     mAdapter.notifyDataSetChanged();
                 });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ShoppingCartActivity.this, MainActivity.class);
+
+        startActivity(intent);
+        finish();
     }
 }

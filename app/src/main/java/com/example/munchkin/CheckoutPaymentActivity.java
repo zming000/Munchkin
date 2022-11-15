@@ -26,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -46,6 +47,7 @@ public class CheckoutPaymentActivity extends AppCompatActivity {
     ConstraintLayout mOrderSummary;
     LinearLayout mOrderSummaryDropDown;
     String method;
+    String[] bookIDs, bookCollections, bookTitles, bookPrices, bookQuantity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +74,8 @@ public class CheckoutPaymentActivity extends AppCompatActivity {
         mOrderSummary = findViewById(R.id.orderSummary_constraintLayout3);
         showOrderSummaryTxt = findViewById(R.id.CheckoutPage3_showOrderSummary_textView);
         mOrderSummaryDropDown = findViewById(R.id.orderSummary_dropDown);
+
+
 
         //get username from shared preference
         String uName = getIntent().getStringExtra("username");
@@ -142,42 +146,48 @@ public class CheckoutPaymentActivity extends AppCompatActivity {
                 order.put("date", currentDate);
                 order.put("shippingAddress", mshipTo_value.getText().toString());
                 order.put("status", "Pending");
-                order.put("custPhone", getIntent().getStringExtra("phoneNumber"));
+                order.put("custPhone", "+60" + getIntent().getStringExtra("phoneNumber"));
                 order.put("totalItem", mtotal_qty.getText().toString());
                 order.put("totalPrice", mtotal_value.getText().toString());
+                order.put("orderedItems", Arrays.asList(bookIDs));
+                order.put("orderedItemsName", Arrays.asList(bookTitles));
+                order.put("orderedItemsPrice", Arrays.asList(bookPrices));
+                order.put("orderedItemsCollection", Arrays.asList(bookCollections));
+                order.put("orderedItemsQty", Arrays.asList(bookQuantity));
 
                 addOrder.collection("orders").document(orderID).set(order)
                             .addOnSuccessListener(unused -> {
-                                Toast.makeText(CheckoutPaymentActivity.this, "Your order have been placed!", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(CheckoutPaymentActivity.this, MainActivity.class));
-                                finishAffinity();
-                                finish();
+                                FirebaseFirestore getItem = FirebaseFirestore.getInstance();
+                                FirebaseFirestore deleteItem = FirebaseFirestore.getInstance();
+                                getItem.collection("Account Details").document(uName).collection("Shopping Cart")
+                                        .addSnapshotListener((value, error) -> {
+                                            if (error != null) {
+                                                Toast.makeText(CheckoutPaymentActivity.this, "Error Loading Cart!", Toast.LENGTH_SHORT).show();
+                                                return;
+                                            }
+
+                                            //clear list
+                                            mCartItemArrayList.clear();
+
+                                            //use the id to check if the driver available within the duration requested
+                                            for (DocumentChange dc : Objects.requireNonNull(value).getDocumentChanges()) {
+                                                if (dc.getType() == DocumentChange.Type.ADDED) {
+                                                    Map<String,Object> status = new HashMap<>();
+                                                    status.put("status", "Paid");
+                                                    deleteItem.collection("Account Details").document(uName).collection("Shopping Cart")
+                                                            .document(dc.getDocument().getId()).update(status);
+                                                }
+                                            }
+                                            mCartItemArrayList.clear();
+
+                                            Toast.makeText(CheckoutPaymentActivity.this, "Your order have been placed!", Toast.LENGTH_SHORT).show();
+                                            startActivity(new Intent(CheckoutPaymentActivity.this, MainActivity.class));
+                                            finishAffinity();
+                                            finish();
+                                        });
                             })
                         .addOnFailureListener(e -> {
                             Toast.makeText(CheckoutPaymentActivity.this, "Fail to place order!", Toast.LENGTH_SHORT).show();
-                        });
-
-                FirebaseFirestore getItem = FirebaseFirestore.getInstance();
-                FirebaseFirestore deleteItem = FirebaseFirestore.getInstance();
-                getItem.collection("Account Details").document(uName).collection("Shopping Cart")
-                        .addSnapshotListener((value, error) -> {
-                            if (error != null) {
-                                Toast.makeText(CheckoutPaymentActivity.this, "Error Loading Cart!", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-
-                            //clear list
-                            mCartItemArrayList.clear();
-
-                            //use the id to check if the driver available within the duration requested
-                            for (DocumentChange dc : Objects.requireNonNull(value).getDocumentChanges()) {
-                                if (dc.getType() == DocumentChange.Type.ADDED) {
-                                    Map<String,Object> status = new HashMap<>();
-                                    status.put("status", "Paid");
-                                    deleteItem.collection("Account Details").document(uName).collection("Shopping Cart")
-                                                    .document(dc.getDocument().getId()).update(status);
-                                }
-                            }
                         });
             }
             else{
@@ -191,8 +201,8 @@ public class CheckoutPaymentActivity extends AppCompatActivity {
         FirebaseFirestore getPrice = FirebaseFirestore.getInstance();
         ArrayList<String> id = new ArrayList<>();
 
-        cartDB.collection("Account Details").document(username).collection("Shopping Cart").whereEqualTo("status", "Unpaid")
-
+        cartDB.collection("Account Details").document(username).collection("Shopping Cart")
+                .whereEqualTo("status", "Unpaid")
                 .addSnapshotListener((value, error) -> {
                     if(error != null){
                         Toast.makeText(CheckoutPaymentActivity.this, "Error Loading Cart!", Toast.LENGTH_SHORT).show();
@@ -209,35 +219,52 @@ public class CheckoutPaymentActivity extends AppCompatActivity {
                             id.add(dc.getDocument().getId());
                         }
                     }
-                    AtomicReference<Double> total = new AtomicReference<>(0.00);
-                    AtomicInteger qty = new AtomicInteger();
-                    for(int i = 0; i < id.size(); i++){
 
+                    bookIDs = new String[id.size()];
+                    bookCollections = new String[id.size()];
+                    bookTitles = new String[id.size()];
+                    bookPrices = new String[id.size()];
+                    bookQuantity = new String[id.size()];
+
+                    double total = 0;
+                    int qty = 0;
+                    for (int i = 0; i < mCartItemArrayList.size(); i++) {
+                        CartItem pos = mCartItemArrayList.get(i);
                         int finalI = i;
+
+                        qty += Integer.parseInt(pos.quantity);
+
+                        if (finalI == id.size() - 1) {
+                            if (method.equals("Pos Laju (RM 6)")) {
+                                total += (Double.parseDouble(pos.price) * Double.parseDouble(pos.quantity));
+                                total += 6.00;
+                            } else {
+                                total += (Double.parseDouble(pos.price) * Double.parseDouble(pos.quantity));
+                                total += 10.00;
+                            }
+                        } else {
+                            total += (Double.parseDouble(pos.price) * Double.parseDouble(pos.quantity));
+                        }
+
                         getPrice.collection("Account Details").document(username)
                                 .collection("Shopping Cart").document(id.get(i)).get()
                                 .addOnCompleteListener(task -> {
-                                    if(task.isSuccessful()){
+                                    if (task.isSuccessful()) {
                                         DocumentSnapshot doc = task.getResult();
 
-                                        if(finalI == id.size() - 1){
-                                            if(method.equals("Pos Laju (RM 6)")){
-                                                total.updateAndGet(v -> new Double((double) (v + (Double.parseDouble(doc.getString("price")) * Double.parseDouble(doc.getString("quantity")) + 6.00))));
-                                            }
-                                            else{
-                                                total.updateAndGet(v -> new Double((double) (v + (Double.parseDouble(doc.getString("price")) * Double.parseDouble(doc.getString("quantity")) + 10.00))));
-                                            }
-                                        }
-                                        else{
-                                            total.updateAndGet(v -> new Double((double) (v + (Double.parseDouble(doc.getString("price")) * Double.parseDouble(doc.getString("quantity"))))));
-                                        }
-                                        qty.addAndGet(Integer.parseInt(doc.getString("quantity")));
-                                        mCheckoutPage3_orderTotalPrice_textView.setText("RM " + total);
-                                        msubtotal_value.setText("RM " + total);
-                                        mtotal_value.setText("RM " + total);
-                                        mtotal_qty.setText(String.valueOf(qty));
+                                        bookIDs[finalI] = doc.getString("bookId");
+                                        bookPrices[finalI] = doc.getString("price");
+                                        bookQuantity[finalI] = doc.getString("quantity");
+                                        bookCollections[finalI] = doc.getString("collection");
+                                        bookTitles[finalI] = doc.getString("title");
+
                                     }
                                 });
+
+                        mCheckoutPage3_orderTotalPrice_textView.setText("RM " + total);
+                        msubtotal_value.setText("RM " + total);
+                        mtotal_value.setText("RM " + total);
+                        mtotal_qty.setText(String.valueOf(qty));
                     }
 
                     mAdapter.notifyDataSetChanged();

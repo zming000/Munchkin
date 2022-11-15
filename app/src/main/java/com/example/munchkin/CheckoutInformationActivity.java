@@ -92,6 +92,22 @@ public class CheckoutInformationActivity extends AppCompatActivity {
         //get username from shared preference
         String uName = getIntent().getStringExtra("username");
 
+        String country = getIntent().getStringExtra("country");
+
+        if(country != null){
+            mShippingCountry.setText(getIntent().getStringExtra("country"));
+            mFirstName.setText(getIntent().getStringExtra("firstName"));
+            mLastName.setText(getIntent().getStringExtra("lastName"));
+            mCompany.setText(getIntent().getStringExtra("company"));
+            mAddress.setText(getIntent().getStringExtra("address"));
+            mApartment.setText(getIntent().getStringExtra("apartment"));
+            mPostcode.setText(getIntent().getStringExtra("postcode"));
+            mCity.setText(getIntent().getStringExtra("city"));
+            mState.setText(getIntent().getStringExtra("state"));
+            mPhone.setText(getIntent().getStringExtra("phoneNumber"));
+        }
+
+
         mcartSummary_items_recycler_view.setLayoutManager(new LinearLayoutManager(this));
         mCartItemArrayList = new ArrayList<>();
         mAdapter = new CartItemAdapter(this, mCartItemArrayList, uName);
@@ -110,7 +126,8 @@ public class CheckoutInformationActivity extends AppCompatActivity {
                 });
 
         mBackBtn.setOnClickListener(v -> {
-            //go back to shopping cart activity
+            Intent intent = new Intent(CheckoutInformationActivity.this, ShoppingCartActivity.class);
+            startActivity(intent);
             finish();
         });
 
@@ -157,11 +174,13 @@ public class CheckoutInformationActivity extends AppCompatActivity {
                     intent.putExtra("postcode", mPostcode.getText().toString());
                     intent.putExtra("city", mCity.getText().toString());
                     intent.putExtra("state", mState.getText().toString());
-                    intent.putExtra("phoneNumber", "+60" + mPhone.getText().toString());
+                    intent.putExtra("phoneNumber", mPhone.getText().toString());
                     intent.putExtra("email", mEmailText.getText().toString());
                     intent.putExtra("username", uName);
 
                     startActivity(intent);
+                    finishAffinity();
+                    finish();
                 }
                 else{
                     Toast.makeText(CheckoutInformationActivity.this, "Please ensure each field input correctly!", Toast.LENGTH_SHORT).show();
@@ -172,7 +191,6 @@ public class CheckoutInformationActivity extends AppCompatActivity {
 
     private void getOrderDetailsFromFirestore(String username) {
         FirebaseFirestore cartDB = FirebaseFirestore.getInstance();
-        FirebaseFirestore getPrice = FirebaseFirestore.getInstance();
         ArrayList<String> id = new ArrayList<>();
 
         cartDB.collection("Account Details").document(username).collection("Shopping Cart")
@@ -190,28 +208,21 @@ public class CheckoutInformationActivity extends AppCompatActivity {
                     for(DocumentChange dc : Objects.requireNonNull(value).getDocumentChanges()){
                         if(dc.getType() == DocumentChange.Type.ADDED) {
                             mCartItemArrayList.add(dc.getDocument().toObject(CartItem.class));
-                            id.add(dc.getDocument().getId());
                         }
                     }
-                    AtomicReference<Double> total = new AtomicReference<>(0.00);
-                    AtomicInteger qty = new AtomicInteger();
-                    for(int i = 0; i < id.size(); i++){
+                    double total = 0;
+                    int qty = 0;
+                    for (int i = 0; i < mCartItemArrayList.size(); i++) {
+                        CartItem pos = mCartItemArrayList.get(i);
 
-                        getPrice.collection("Account Details").document(username)
-                                .collection("Shopping Cart").document(id.get(i)).get()
-                                .addOnCompleteListener(task -> {
-                                   if(task.isSuccessful()){
-                                       DocumentSnapshot doc = task.getResult();
-
-                                       total.updateAndGet(v -> new Double((double) (v + (Double.parseDouble(doc.getString("price")) * Double.parseDouble(doc.getString("quantity"))))));
-                                       qty.addAndGet(Integer.parseInt(doc.getString("quantity")));
-                                       mCheckoutPage1_orderTotalPrice_textView.setText("RM " + total);
-                                       msubtotal_value.setText("RM " + total);
-                                       mtotal_value.setText("RM " + total);
-                                       mtotal_qty.setText(String.valueOf(qty));
-                                   }
-                                });
+                        total += (Double.parseDouble(pos.price) * Double.parseDouble(pos.quantity));
+                        qty += Integer.parseInt(pos.quantity);
+                        mCheckoutPage1_orderTotalPrice_textView.setText("RM " + total);
+                        msubtotal_value.setText("RM " + total);
+                        mtotal_value.setText("RM " + total);
+                        mtotal_qty.setText(String.valueOf(qty));
                     }
+
                     mAdapter.notifyDataSetChanged();
                 });
     }

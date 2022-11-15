@@ -121,8 +121,8 @@ public class CheckoutShippingActivity extends AppCompatActivity {
                 intent.putExtra("city", getIntent().getStringExtra("city"));
                 intent.putExtra("state", getIntent().getStringExtra("state"));
                 intent.putExtra("phoneNumber", getIntent().getStringExtra("phoneNumber"));
-                intent.putExtra("shipping", shippingMethod);
                 intent.putExtra("email", getIntent().getStringExtra("email"));
+                intent.putExtra("shipping", shippingMethod);
                 intent.putExtra("username", uName);
 
                 startActivity(intent);
@@ -132,14 +132,64 @@ public class CheckoutShippingActivity extends AppCompatActivity {
             }
         });
 
-        mchangeShipAddr_textView.setOnClickListener(view -> finish());
-        mCheckoutPage2_backImageView.setOnClickListener(view -> finish());
-        mreturnToInformation_textView.setOnClickListener(view -> finish());
+        mchangeShipAddr_textView.setOnClickListener(view -> {
+            Intent intent = new Intent(CheckoutShippingActivity.this, CheckoutInformationActivity.class);
+            intent.putExtra("country", getIntent().getStringExtra("country"));
+            intent.putExtra("firstName", getIntent().getStringExtra("firstName"));
+            intent.putExtra("lastName", getIntent().getStringExtra("lastName"));
+            intent.putExtra("company", getIntent().getStringExtra("company"));
+            intent.putExtra("address", getIntent().getStringExtra("address"));
+            intent.putExtra("apartment", getIntent().getStringExtra("apartment"));
+            intent.putExtra("postcode", getIntent().getStringExtra("postcode"));
+            intent.putExtra("city", getIntent().getStringExtra("city"));
+            intent.putExtra("state", getIntent().getStringExtra("state"));
+            intent.putExtra("phoneNumber", getIntent().getStringExtra("phoneNumber"));
+            intent.putExtra("email", getIntent().getStringExtra("email"));
+            intent.putExtra("username", uName);
+            startActivity(intent);
+            finish();
+        });
+
+        mCheckoutPage2_backImageView.setOnClickListener(view -> {
+            Intent intent = new Intent(CheckoutShippingActivity.this, CheckoutInformationActivity.class);
+            intent.putExtra("country", getIntent().getStringExtra("country"));
+            intent.putExtra("firstName", getIntent().getStringExtra("firstName"));
+            intent.putExtra("lastName", getIntent().getStringExtra("lastName"));
+            intent.putExtra("company", getIntent().getStringExtra("company"));
+            intent.putExtra("address", getIntent().getStringExtra("address"));
+            intent.putExtra("apartment", getIntent().getStringExtra("apartment"));
+            intent.putExtra("postcode", getIntent().getStringExtra("postcode"));
+            intent.putExtra("city", getIntent().getStringExtra("city"));
+            intent.putExtra("state", getIntent().getStringExtra("state"));
+            intent.putExtra("phoneNumber", getIntent().getStringExtra("phoneNumber"));
+            intent.putExtra("email", getIntent().getStringExtra("email"));
+            intent.putExtra("username", uName);
+            startActivity(intent);
+            finish();
+        });
+
+        mreturnToInformation_textView.setOnClickListener(view -> {
+            Intent intent = new Intent(CheckoutShippingActivity.this, CheckoutInformationActivity.class);
+            intent.putExtra("country", getIntent().getStringExtra("country"));
+            intent.putExtra("firstName", getIntent().getStringExtra("firstName"));
+            intent.putExtra("lastName", getIntent().getStringExtra("lastName"));
+            intent.putExtra("company", getIntent().getStringExtra("company"));
+            intent.putExtra("address", getIntent().getStringExtra("address"));
+            intent.putExtra("apartment", getIntent().getStringExtra("apartment"));
+            intent.putExtra("postcode", getIntent().getStringExtra("postcode"));
+            intent.putExtra("city", getIntent().getStringExtra("city"));
+            intent.putExtra("state", getIntent().getStringExtra("state"));
+            intent.putExtra("phoneNumber", getIntent().getStringExtra("phoneNumber"));
+            intent.putExtra("shipping", shippingMethod);
+            intent.putExtra("email", getIntent().getStringExtra("email"));
+            intent.putExtra("username", uName);
+            startActivity(intent);
+            finish();
+        });
     }
 
     private void getOrderDetailsFromFirestore(String username) {
         FirebaseFirestore cartDB = FirebaseFirestore.getInstance();
-        FirebaseFirestore getPrice = FirebaseFirestore.getInstance();
         ArrayList<String> id = new ArrayList<>();
 
         cartDB.collection("Account Details").document(username).collection("Shopping Cart")
@@ -157,27 +207,19 @@ public class CheckoutShippingActivity extends AppCompatActivity {
                     for(DocumentChange dc : Objects.requireNonNull(value).getDocumentChanges()){
                         if(dc.getType() == DocumentChange.Type.ADDED) {
                             mCartItemArrayList.add(dc.getDocument().toObject(CartItem.class));
-                            id.add(dc.getDocument().getId());
                         }
                     }
-                    AtomicReference<Double> total = new AtomicReference<>(0.00);
-                    AtomicInteger qty = new AtomicInteger();
-                    for(int i = 0; i < id.size(); i++){
+                    double total = 0;
+                    int qty = 0;
+                    for (int i = 0; i < mCartItemArrayList.size(); i++) {
+                        CartItem pos = mCartItemArrayList.get(i);
 
-                        getPrice.collection("Account Details").document(username)
-                                .collection("Shopping Cart").document(id.get(i)).get()
-                                .addOnCompleteListener(task -> {
-                                    if(task.isSuccessful()){
-                                        DocumentSnapshot doc = task.getResult();
-
-                                        total.updateAndGet(v -> new Double((double) (v + (Double.parseDouble(doc.getString("price")) * Double.parseDouble(doc.getString("quantity"))))));
-                                        qty.addAndGet(Integer.parseInt(doc.getString("quantity")));
-                                        mCheckoutPage2_orderTotalPrice_textView.setText("RM " + total);
-                                        msubtotal_value.setText("RM " + total);
-                                        mtotal_value.setText("RM " + total);
-                                        mtotal_qty.setText(String.valueOf(qty));
-                                    }
-                                });
+                        total += (Double.parseDouble(pos.price) * Double.parseDouble(pos.quantity));
+                        qty += Integer.parseInt(pos.quantity);
+                        mCheckoutPage2_orderTotalPrice_textView.setText("RM " + total);
+                        msubtotal_value.setText("RM " + total);
+                        mtotal_value.setText("RM " + total);
+                        mtotal_qty.setText(String.valueOf(qty));
                     }
                     mAdapter.notifyDataSetChanged();
                 });

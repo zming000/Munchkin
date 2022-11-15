@@ -54,6 +54,7 @@ public class BookDetail extends AppCompatActivity {
         String name = getIntent().getStringExtra("name");
         String price = getIntent().getStringExtra("price");
         String id = getIntent().getStringExtra("bookID");
+        String collection = getIntent().getStringExtra("collection");
 
         //initialize shared preference
         spMunchkin = getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -128,6 +129,7 @@ public class BookDetail extends AppCompatActivity {
                 order.put("bookId", id);
                 order.put("price", price);
                 order.put("title", name);
+                order.put("collection", collection);
                 order.put("quantity", String.valueOf(qty));
                 order.put("status", "Unpaid");
 

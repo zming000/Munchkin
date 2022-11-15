@@ -83,6 +83,7 @@ public class AdapterBookList extends RecyclerView.Adapter<AdapterBookList.BookLi
             intent.putExtra("name", mbl.title);
             intent.putExtra("price", mbl.price);
             intent.putExtra("bookID", mbl.bookID);
+            intent.putExtra("collection", mbl.collection);
             bookContext.startActivity(intent);
         });
     }

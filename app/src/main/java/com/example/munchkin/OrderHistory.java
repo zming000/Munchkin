@@ -23,8 +23,8 @@ public class OrderHistory extends AppCompatActivity {
     FirebaseFirestore historyDB;
 
     //key name
-    private static final String SP_NAME = "drivmePref";
-    private static final String KEY_ID = "userID";
+    private static final String SP_NAME = "munchkinPref";
+    private static final String KEY_USERNAME = "username";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,10 +53,9 @@ public class OrderHistory extends AppCompatActivity {
     }
 
     private void getOrderDetailsFromFirestore() {
-        SharedPreferences spDrivme = getSharedPreferences(SP_NAME, MODE_PRIVATE);
+        SharedPreferences spMunchkin = getSharedPreferences(SP_NAME, MODE_PRIVATE);
         //get user id from shared preference
-        String uID = "tester1";
-                //spDrivme.getString(KEY_ID, null);
+        String uID = spMunchkin.getString(KEY_USERNAME, null);
 
         historyDB.collection("orders")
                 .whereEqualTo("custId", uID)
