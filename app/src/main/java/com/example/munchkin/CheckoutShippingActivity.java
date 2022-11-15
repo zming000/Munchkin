@@ -216,12 +216,31 @@ public class CheckoutShippingActivity extends AppCompatActivity {
 
                         total += (Double.parseDouble(pos.price) * Double.parseDouble(pos.quantity));
                         qty += Integer.parseInt(pos.quantity);
-                        mCheckoutPage2_orderTotalPrice_textView.setText("RM " + total);
-                        msubtotal_value.setText("RM " + total);
-                        mtotal_value.setText("RM " + total);
+                        mCheckoutPage2_orderTotalPrice_textView.setText("RM " + total + "0");
+                        mtotal_value.setText("RM " + total + "0");
                         mtotal_qty.setText(String.valueOf(qty));
                     }
                     mAdapter.notifyDataSetChanged();
                 });
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(CheckoutShippingActivity.this, CheckoutInformationActivity.class);
+        intent.putExtra("country", getIntent().getStringExtra("country"));
+        intent.putExtra("firstName", getIntent().getStringExtra("firstName"));
+        intent.putExtra("lastName", getIntent().getStringExtra("lastName"));
+        intent.putExtra("company", getIntent().getStringExtra("company"));
+        intent.putExtra("address", getIntent().getStringExtra("address"));
+        intent.putExtra("apartment", getIntent().getStringExtra("apartment"));
+        intent.putExtra("postcode", getIntent().getStringExtra("postcode"));
+        intent.putExtra("city", getIntent().getStringExtra("city"));
+        intent.putExtra("state", getIntent().getStringExtra("state"));
+        intent.putExtra("phoneNumber", getIntent().getStringExtra("phoneNumber"));
+        intent.putExtra("shipping", shippingMethod);
+        intent.putExtra("email", getIntent().getStringExtra("email"));
+
+        startActivity(intent);
+        finish();
     }
 }

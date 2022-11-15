@@ -254,9 +254,11 @@ public class CheckoutPaymentActivity extends AppCompatActivity {
                         if (finalI == id.size() - 1) {
                             if (method.equals("Pos Laju (RM 6)")) {
                                 total += (Double.parseDouble(pos.price) * Double.parseDouble(pos.quantity));
+                                msubtotal_value.setText("RM " + total);
                                 total += 6.00;
                             } else {
                                 total += (Double.parseDouble(pos.price) * Double.parseDouble(pos.quantity));
+                                msubtotal_value.setText("RM " + total);
                                 total += 10.00;
                             }
                         } else {
@@ -278,9 +280,8 @@ public class CheckoutPaymentActivity extends AppCompatActivity {
                                     }
                                 });
 
-                        mCheckoutPage3_orderTotalPrice_textView.setText("RM " + total);
-                        msubtotal_value.setText("RM " + total);
-                        mtotal_value.setText("RM " + total);
+                        mCheckoutPage3_orderTotalPrice_textView.setText("RM " + total + "0");
+                        mtotal_value.setText("RM " + total + "0");
                         mtotal_qty.setText(String.valueOf(qty));
                     }
 

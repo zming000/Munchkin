@@ -217,9 +217,8 @@ public class CheckoutInformationActivity extends AppCompatActivity {
 
                         total += (Double.parseDouble(pos.price) * Double.parseDouble(pos.quantity));
                         qty += Integer.parseInt(pos.quantity);
-                        mCheckoutPage1_orderTotalPrice_textView.setText("RM " + total);
-                        msubtotal_value.setText("RM " + total);
-                        mtotal_value.setText("RM " + total);
+                        mCheckoutPage1_orderTotalPrice_textView.setText("RM " + total + "0");
+                        mtotal_value.setText("RM " + total + "0");
                         mtotal_qty.setText(String.valueOf(qty));
                     }
 
