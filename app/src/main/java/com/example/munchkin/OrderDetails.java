@@ -98,7 +98,10 @@ public class OrderDetails extends AppCompatActivity {
                                 String totalItem = document.getString("totalItem");
 
                                 DecimalFormat formatter = new DecimalFormat("###,###,##0.00");
-                                String totalPrice = formatter.format(Double.parseDouble(Objects.requireNonNull(document.getString("totalPrice"))));
+
+                                String tempPriceStr = document.getString("totalPrice");
+                                String tempPriceSubstr = tempPriceStr.replace("RM ", "");
+                                String totalPrice = formatter.format(Double.parseDouble(Objects.requireNonNull(tempPriceSubstr)));
 
                                 mTotalItemTV.setText("Total Item: " + totalItem);
 

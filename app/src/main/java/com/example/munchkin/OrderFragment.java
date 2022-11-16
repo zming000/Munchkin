@@ -89,7 +89,10 @@ public class OrderFragment extends Fragment {
                             String shipAddress = document.getString("shippingAddress");
 
                             int totalItem = Integer.parseInt(document.getString("totalItem"));
-                            double totalPrice = Double.parseDouble(document.getString("totalPrice"));
+
+                            String tempPriceStr = document.getString("totalPrice");
+                            String tempPriceSubstr = tempPriceStr.replace("RM ", "");
+                            double totalPrice = Double.parseDouble(tempPriceSubstr);
 
                             ArrayList<String> tempBookId;
                             tempBookId = (ArrayList<String>) document.get("orderedItems");
